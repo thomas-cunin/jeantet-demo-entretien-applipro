@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const nav = [
   { href: "/preparation-collaborateur", label: "Formulaire collaborateur" },
   { href: "/preparation-manager", label: "Formulaire manager" },
-  { href: "/entretiens", label: "Entretiens" },
+  { href: "/entretiens", label: "Tableau de bord" },
   { href: "/entretiens/ent-1/vue", label: "Vue Entretien (Sophie)" },
 ];
 
@@ -50,7 +50,7 @@ export function BackofficeLayout({
           <Link href="/" className="block">
             <Image src="/group5-logo.png" alt="Logo" width={140} height={40} className="h-10 w-auto object-contain" />
           </Link>
-          <p className="text-applipro-20 text-sm mt-2">Backoffice</p>
+
         </div>
         <nav className="p-3 flex flex-col gap-1">
           {nav.map((item) => {

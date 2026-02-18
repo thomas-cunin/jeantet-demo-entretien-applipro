@@ -8,7 +8,7 @@ export default function NouvelEntretienPage() {
         href="/entretiens"
         className="text-[14px] text-gris-60 hover:text-applipro mb-4 inline-block"
       >
-        ← Retour à la liste
+        ← Retour au tableau de bord
       </Link>
       <h1 className="text-2xl font-semibold text-applipro-dark mt-1 mb-6">
         Nouvel entretien

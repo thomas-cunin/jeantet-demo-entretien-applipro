@@ -1,5 +1,6 @@
 import { getEntretiensWithDetails } from "@/lib/data";
 import { EntretiensList } from "@/components/entretiens/EntretiensList";
+import { TableauDeBordActions } from "@/components/entretiens/TableauDeBordActions";
 
 export default function EntretiensPage() {
   const entretiens = getEntretiensWithDetails();
@@ -21,13 +22,16 @@ export default function EntretiensPage() {
   return (
     <div className="p-6 md:p-8 max-w-6xl">
       {/* En-tête */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-noir">
-          Entretiens individuels
-        </h1>
-        <p className="text-gris-60 text-[14px] mt-1">
-          Suivez et pilotez les entretiens individuels de vos collaborateurs.
-        </p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-noir">
+            Tableau de bord
+          </h1>
+          <p className="text-gris-60 text-[14px] mt-1">
+            Suivez et pilotez les entretiens individuels de vos collaborateurs.
+          </p>
+        </div>
+        <TableauDeBordActions />
       </div>
 
       {/* Indicateurs synthétiques */}

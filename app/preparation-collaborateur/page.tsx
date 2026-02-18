@@ -23,7 +23,7 @@ export default function PreparationCollaborateurPage() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Retour au backoffice
+          Retour au tableau de bord
         </Link>
       </div>
 
