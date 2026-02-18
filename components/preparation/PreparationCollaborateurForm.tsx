@@ -258,7 +258,7 @@ export function PreparationCollaborateurForm() {
             {OBJECTIFS_N_1.map((obj, index) => (
               <div
                 key={index}
-                className="p-4 rounded-xl bg-gris-05 border border-gris-10 space-y-3"
+                className="p-4 rounded-xl bg-gris-05 border border-gris-10 space-y-3 min-w-0 overflow-hidden"
               >
                 <div>
                   <p className="text-[15px] font-medium text-noir">
@@ -268,27 +268,29 @@ export function PreparationCollaborateurForm() {
                     Échéance : {obj.echeance}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-[14px] text-gris-80 shrink-0">
+                <div className="space-y-1 min-w-0">
+                  <label className="text-[14px] text-gris-80 block">
                     Mon avancement
                   </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={objectifsReponses[index]?.avancement ?? 50}
-                    onChange={(e) =>
-                      updateObjectifReponse(
-                        index,
-                        "avancement",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                    className="flex-1 h-3 rounded-full appearance-none bg-gris-20 accent-applipro"
-                  />
-                  <span className="text-[14px] font-semibold text-applipro w-10 text-right">
-                    {objectifsReponses[index]?.avancement ?? 50}%
-                  </span>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={objectifsReponses[index]?.avancement ?? 50}
+                      onChange={(e) =>
+                        updateObjectifReponse(
+                          index,
+                          "avancement",
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                      className="flex-1 min-w-0 h-3 rounded-full appearance-none bg-gris-20 accent-applipro"
+                    />
+                    <span className="text-[14px] font-semibold text-applipro shrink-0 w-10 text-right">
+                      {objectifsReponses[index]?.avancement ?? 50}%
+                    </span>
+                  </div>
                 </div>
                 <textarea
                   value={objectifsReponses[index]?.commentaire ?? ""}
