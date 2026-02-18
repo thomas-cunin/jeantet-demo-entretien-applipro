@@ -19,6 +19,93 @@ function getInitials(prenom: string, nom: string) {
   return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase();
 }
 
+function EntretienCard({
+  entretien: e,
+  enRetard,
+  formatDate,
+  getInitials,
+}: {
+  entretien: EntretienWithDetails;
+  enRetard: boolean;
+  formatDate: (s: string) => string;
+  getInitials: (prenom: string, nom: string) => string;
+}) {
+  return (
+    <Link
+      href={`/entretiens/${e.id}`}
+      className={`block bg-white rounded-lg border border-gris-10 p-4 hover:border-applipro-20 hover:shadow-sm transition-all ${
+        enRetard ? "border-statut-rouge/30 bg-statut-rouge/5" : ""
+      }`}
+    >
+      <div className="flex items-start gap-3 mb-3">
+        <div
+          className={`flex-shrink-0 w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-[13px] font-medium ${
+            enRetard ? "bg-statut-rouge/20 text-statut-rouge" : "bg-gris-20 text-gris-80"
+          }`}
+        >
+          {e.collaborateur.avatarUrl ? (
+            <img
+              src={e.collaborateur.avatarUrl}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            getInitials(e.collaborateur.prenom, e.collaborateur.nom)
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium text-noir">
+              {e.collaborateur.prenom} {e.collaborateur.nom}
+            </span>
+            {enRetard && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-statut-rouge/10 text-statut-rouge text-[11px] font-semibold uppercase">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                En retard
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] text-gris-60 mt-0.5">
+            Manager : {e.manager.prenom} {e.manager.nom}
+          </p>
+        </div>
+      </div>
+      <dl className="space-y-3 text-[14px] border-t border-gris-10 pt-3">
+        <div>
+          <dt className="text-gris-60 text-[13px] mb-0.5">Type</dt>
+          <dd>
+            <TypeBadge type={e.type} />
+          </dd>
+        </div>
+        <div>
+          <dt className="text-gris-60 text-[13px] mb-0.5">Dernière modification</dt>
+          <dd className="text-noir">{formatDate(e.updatedAt)}</dd>
+        </div>
+        <div>
+          <dt className="text-gris-60 text-[13px] mb-0.5">Date prévue</dt>
+          <dd className={enRetard ? "text-statut-rouge font-medium" : "text-noir"}>
+            {formatDate(e.datePrevue)}
+            {enRetard && (
+              <span className="block text-[11px] font-normal">Date dépassée</span>
+            )}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-gris-60 text-[13px] mb-0.5">Progrès</dt>
+          <dd>
+            <StatutBadge statut={e.statut} />
+          </dd>
+        </div>
+      </dl>
+      <p className="mt-3 pt-3 border-t border-gris-10 text-applipro text-[14px] font-medium">
+        Voir la fiche →
+      </p>
+    </Link>
+  );
+}
+
 // Vérifie si un entretien est en retard (date prévue dépassée et non clôturé/annulé)
 function isEnRetard(entretien: EntretienWithDetails): boolean {
   if (entretien.statut === "realise" || entretien.statut === "annule") {
@@ -126,8 +213,23 @@ export function EntretiensList({ entretiens }: EntretiensListProps) {
         </div>
       </div>
 
-      {/* Tableau — en-tête sombre style Onboarding */}
-      <div className="bg-white rounded-lg border border-gris-10 overflow-hidden">
+      {/* Vue cartes — petit écran */}
+      <div className="md:hidden flex flex-col gap-3">
+        {filtered.map((e) => {
+          const enRetard = isEnRetard(e);
+          return (
+            <EntretienCard key={e.id} entretien={e} enRetard={enRetard} formatDate={formatDate} getInitials={getInitials} />
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="bg-white rounded-lg border border-gris-10 px-4 py-12 text-center text-gris-60 text-[14px]">
+            Aucun entretien ne correspond aux critères.
+          </div>
+        )}
+      </div>
+
+      {/* Tableau — à partir de md */}
+      <div className="hidden md:block bg-white rounded-lg border border-gris-10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
