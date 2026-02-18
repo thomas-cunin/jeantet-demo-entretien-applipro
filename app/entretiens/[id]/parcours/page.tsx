@@ -24,7 +24,7 @@ export default function EntretienParcoursPage({
         ← Retour à la fiche entretien
       </Link>
       <h1 className="text-2xl font-semibold text-applipro-dark mt-1 mb-4">
-        Lancer l&apos;entretien
+        Lancement de l&apos;entretien
       </h1>
       <p className="text-[14px] text-gris-60 mb-6">
         Wizard multi-étapes côté manager pour suivre la préparation, la
