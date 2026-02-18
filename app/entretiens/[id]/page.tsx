@@ -47,7 +47,7 @@ export default function EntretienDetailPage({
         <div className="flex flex-col sm:flex-row gap-2">
           <Link href={`/entretiens/${id}/parcours`}>
             <Button variant="primary" size="small">
-              Parcours d&apos;entretien
+              Lancer l&apos;entretien
             </Button>
           </Link>
           <Link href={`/entretiens/${id}/vue`}>
