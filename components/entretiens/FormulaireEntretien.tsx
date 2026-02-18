@@ -195,7 +195,7 @@ export function FormulaireEntretien({ entretien }: FormulaireEntretienProps) {
         label="Lieu (optionnel)"
         value={lieu}
         onChange={(e) => setLieu(e.target.value)}
-        placeholder="Ex. Salle A, Bureau manager"
+        placeholder="Ex. Bureau exploitation, Salle de réunion"
       />
       <Textarea
         label="Notes (optionnel)"

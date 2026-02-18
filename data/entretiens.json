@@ -8,9 +8,9 @@
     "datePrevue": "2025-03-15",
     "dateReelle": "2025-03-15",
     "lieu": "Salle de réunion A",
-    "notes": "Entretien annuel d'évaluation - Sophie Martin",
-    "objectifs": "Bilan de l'année écoulée, définition des objectifs N+1, identification des besoins en formation.",
-    "compteRendu": "Entretien constructif. Sophie démontre une bonne progression et un fort engagement.",
+    "notes": "Entretien annuel d'évaluation - Sophie Martin, Agent d'exploitation",
+    "objectifs": "Bilan de l'année écoulée sur l'activité exploitation, définition des objectifs N+1, identification des besoins en formation transport.",
+    "compteRendu": "Entretien constructif. Sophie démontre une excellente maîtrise de la planification des tournées et un fort engagement au sein de Jeantet Transport.",
     "createdAt": "2025-02-15T09:00:00Z",
     "updatedAt": "2025-03-15T16:30:00Z"
   },
@@ -21,9 +21,9 @@
     "type": "bilan",
     "statut": "planifie",
     "datePrevue": "2025-03-22",
-    "lieu": "Bureau du manager",
-    "notes": "Entretien annuel d'évaluation - Marc Dubois",
-    "objectifs": "Bilan annuel, perspectives d'évolution, plan de développement des compétences.",
+    "lieu": "Bureau du responsable exploitation",
+    "notes": "Entretien annuel d'évaluation - Marc Dubois, Chauffeur",
+    "objectifs": "Bilan annuel de l'activité conducteur, point sur l'équilibre vie pro/perso, besoins en formation (écoconduite, sécurité).",
     "createdAt": "2025-02-20T10:00:00Z",
     "updatedAt": "2025-02-20T10:00:00Z"
   }

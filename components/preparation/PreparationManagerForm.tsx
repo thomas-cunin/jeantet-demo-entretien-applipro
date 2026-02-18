@@ -11,8 +11,8 @@ const ENTRETIEN_CONTEXTE = {
   collaborateur: {
     prenom: "Sophie",
     nom: "Martin",
-    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
-    poste: "Chargée de clientèle",
+    avatarUrl: "https://randomuser.me/api/portraits/women/12.jpg",
+    poste: "Agent d'exploitation",
   },
 };
 
@@ -333,7 +333,7 @@ export function PreparationManagerForm() {
           <textarea
             value={besoinsFormation}
             onChange={(e) => setBesoinsFormation(e.target.value)}
-            placeholder="Ex. Formation management, techniques de vente avancées, certification métier..."
+            placeholder="Ex. Formation réglementation transport, gestion des litiges, écoconduite..."
             rows={4}
             className="w-full px-4 py-3 rounded-xl border border-gris-20 bg-gris-05 text-noir text-[15px] placeholder-gris-40 focus:outline-none focus:ring-2 focus:ring-applipro focus:border-transparent resize-none"
           />

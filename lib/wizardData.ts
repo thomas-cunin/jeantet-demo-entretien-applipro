@@ -116,11 +116,11 @@ function isBrowser() {
 // Les thèmes correspondent aux champs des formulaires PreparationCollaborateurForm et PreparationManagerForm.
 const WIZARD_DATA: WizardEntretienData[] = [
   {
-    // Entretien annuel Sophie Martin - réalisé
+    // Entretien annuel Sophie Martin - Agent d'exploitation - réalisé
     entretienId: "ent-1",
     preCollaborateur: {
       ressentiGeneral:
-        "Cette année a été riche en apprentissages. Je me sens bien intégrée dans l'équipe et j'apprécie l'ambiance de travail. J'ai pu monter en compétences sur plusieurs projets techniques. Quelques périodes de charge intense mais globalement un bon équilibre.",
+        "Cette année a été riche en apprentissages. Je me sens bien intégrée dans l'équipe exploitation et j'apprécie l'ambiance de travail au sein de Jeantet Transport. J'ai pu monter en compétences sur la gestion des plannings et l'optimisation des tournées. Quelques périodes de charge intense, notamment lors des pics d'activité saisonniers, mais globalement un bon équilibre.",
       // Section 2 - Sentiment global (smiley)
       sentimentGlobal: 4,
       // Thèmes du formulaire collaborateur (section 3 - Évaluation par thème)
@@ -129,25 +129,25 @@ const WIZARD_DATA: WizardEntretienData[] = [
           theme: "Résultats et qualité du travail",
           score: 4,
           commentaireCollaborateur:
-            "J'ai atteint la majorité de mes objectifs et je suis satisfaite de la qualité de mon travail sur les projets livrés.",
+            "J'ai atteint la majorité de mes objectifs en termes de taux de service et de respect des délais de livraison. La coordination avec les chauffeurs s'est bien améliorée.",
         },
         {
           theme: "Collaboration avec l'équipe",
           score: 5,
           commentaireCollaborateur:
-            "Excellente collaboration avec mes collègues, j'apprécie particulièrement les sessions de pair programming.",
+            "Excellente collaboration avec mes collègues exploitants et les chauffeurs. La communication quotidienne fonctionne bien.",
         },
         {
           theme: "Développement des compétences",
           score: 4,
           commentaireCollaborateur:
-            "J'ai progressé sur React et TypeScript. Je souhaite approfondir mes connaissances en architecture logicielle.",
+            "J'ai progressé sur le logiciel TMS et la gestion des aléas transport. Je souhaite approfondir mes connaissances en réglementation transport.",
         },
         {
           theme: "Équilibre vie pro / perso",
           score: 3,
           commentaireCollaborateur:
-            "Quelques périodes de rush avec des heures supplémentaires, mais globalement acceptable.",
+            "Quelques périodes avec des heures supplémentaires lors des urgences livraison, mais globalement acceptable.",
         },
       ],
       // Section 4 - Ressenti par thème (smileys)
@@ -159,38 +159,38 @@ const WIZARD_DATA: WizardEntretienData[] = [
       // Objectifs N-1 du formulaire collaborateur (section 5)
       objectifsNMoins1: [
         {
-          intitule: "Atteindre les objectifs quantitatifs fixés sur votre activité principale",
+          intitule: "Améliorer le taux de service livraison à 98%",
           echeance: "Mars 2025",
           avancementCollaborateur: 85,
           commentaireCollaborateur:
-            "Objectifs de livraison atteints à 85%. Un projet a pris du retard mais a été rattrapé au Q4.",
+            "Taux de service atteint à 96,5%. Quelques retards dus à des aléas transport non maîtrisables (intempéries, pannes).",
         },
         {
-          intitule: "Renforcer la qualité de la relation avec les clients / usagers clés",
+          intitule: "Optimiser les tournées pour réduire les kilomètres à vide",
           echeance: "Juin 2025",
           avancementCollaborateur: 90,
           commentaireCollaborateur:
-            "Bons retours des clients internes. J'ai animé plusieurs démos produit avec succès.",
+            "Réduction de 12% des kilomètres à vide grâce à une meilleure planification. Bons retours des chauffeurs sur les nouveaux itinéraires.",
         },
         {
-          intitule: "Développer une nouvelle compétence ou expertise utile à l'équipe",
+          intitule: "Maîtriser le nouveau logiciel TMS",
           echeance: "Décembre 2025",
           avancementCollaborateur: 75,
           commentaireCollaborateur:
-            "Formation Next.js suivie et appliquée sur le projet intranet. En cours d'approfondissement.",
+            "Formation TMS suivie et appliquée au quotidien. Module de traçabilité en cours d'approfondissement.",
         },
       ],
       // Besoins formation (section 6)
       besoinsFormation: [
         {
-          intitule: "Formation architecture microservices",
+          intitule: "Formation réglementation transport routier",
           origine: "collaborateur",
-          commentaire: "Pour mieux comprendre l'architecture globale de nos applications.",
+          commentaire: "Pour mieux accompagner les chauffeurs sur les aspects réglementaires (temps de conduite, etc.).",
         },
         {
-          intitule: "Certification AWS Developer Associate",
+          intitule: "Formation gestion des litiges transport",
           origine: "collaborateur",
-          commentaire: "Permettrait de mieux gérer nos déploiements cloud.",
+          commentaire: "Permettrait de mieux traiter les réclamations clients.",
         },
       ],
       // Compétences du formulaire collaborateur (section 7 - Auto-évaluation)
@@ -199,130 +199,130 @@ const WIZARD_DATA: WizardEntretienData[] = [
           competence: "Atteinte des objectifs annuels",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
-          commentaire: "Objectifs globalement atteints malgré quelques ajustements en cours d'année.",
+          commentaire: "Objectifs de taux de service et d'optimisation globalement atteints malgré les aléas.",
         },
         {
           competence: "Autonomie et prise d'initiative",
           niveauAttendu: 4,
           niveauCollaborateur: 3,
-          commentaire: "Autonome sur les tâches courantes, encore besoin d'accompagnement sur les sujets complexes.",
+          commentaire: "Autonome sur la gestion quotidienne des tournées, encore besoin d'accompagnement sur les situations de crise.",
         },
         {
           competence: "Qualité de la communication",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
-          commentaire: "Communication fluide avec l'équipe et les parties prenantes.",
+          commentaire: "Bonne communication avec les chauffeurs, les clients et les autres services.",
         },
       ],
     },
     preManager: {
       // Section 1 - Synthèse manager
       syntheseManager:
-        "Sophie a réalisé une excellente année. Son intégration est un succès et elle est devenue une référence technique sur React dans l'équipe. Elle fait preuve d'initiative et sa rigueur est appréciée. Je recommande de continuer à lui confier des responsabilités croissantes.",
+        "Sophie a réalisé une excellente année. Son intégration au service exploitation est un succès et elle est devenue une référence sur la planification des tournées. Elle fait preuve d'initiative et sa rigueur est appréciée des chauffeurs comme des clients. Je recommande de continuer à lui confier des responsabilités croissantes.",
       // Section 2 - Évaluation par thème (thèmes du formulaire manager)
       evaluationsManager: [
         {
           theme: "Qualité du travail",
           score: 4,
-          commentaire: "Code propre et bien documenté, peu de bugs en production.",
+          commentaire: "Plannings bien optimisés, peu d'erreurs d'affectation, bonne anticipation des besoins.",
         },
         {
           theme: "Respect des délais",
           score: 4,
-          commentaire: "Livraisons ponctuelles, bonne anticipation des risques.",
+          commentaire: "Tournées préparées à temps, bonne réactivité en cas d'aléa.",
         },
         {
           theme: "Autonomie",
           score: 4,
-          commentaire: "Autonome sur la plupart des sujets, sait demander de l'aide quand nécessaire.",
+          commentaire: "Autonome sur la gestion quotidienne, sait demander de l'aide pour les cas complexes.",
         },
         {
           theme: "Esprit d'équipe",
           score: 5,
-          commentaire: "Excellente collègue, toujours prête à aider et partager ses connaissances.",
+          commentaire: "Excellente collègue, toujours prête à aider les chauffeurs et à partager ses connaissances.",
         },
         {
           theme: "Communication",
           score: 4,
-          commentaire: "Présentations claires, bons comptes rendus de réunion.",
+          commentaire: "Communications claires avec les chauffeurs et les clients, bons comptes rendus.",
         },
       ],
       // Section 3 - Points forts
       pointsForts: [
-        "Expertise technique React/TypeScript reconnue par l'équipe",
-        "Capacité à monter rapidement en compétences sur de nouveaux sujets",
-        "Excellente communication et pédagogie avec les juniors",
-        "Rigueur dans la documentation et les tests",
+        "Maîtrise du TMS et optimisation des tournées",
+        "Capacité à monter rapidement en compétences sur les outils métier",
+        "Excellente communication avec les chauffeurs et sens du service client",
+        "Rigueur dans le suivi des livraisons et la gestion des aléas",
       ],
       // Section 4 - Axes de progrès
       axesProgres: [
-        "Développer la vision architecture et prise de recul technique",
-        "Améliorer l'estimation des charges sur les projets complexes",
-        "Prendre davantage la parole en réunion client",
+        "Développer l'expertise réglementaire transport",
+        "Améliorer la gestion des situations de crise (pannes, accidents)",
+        "Prendre davantage d'initiatives sur les relations clients grands comptes",
       ],
       // Section 5 - Besoins formation identifiés
       besoinsFormationManager:
-        "Formation architecture logicielle recommandée pour accompagner son évolution vers un rôle de lead technique. La certification AWS serait un plus pour l'équipe.",
+        "Formation réglementation transport recommandée pour accompagner son évolution vers un rôle de responsable exploitation. La formation litiges serait un plus.",
       // Section 6 - Notes préparatoires
       notesPreparatoires:
-        "Aborder la question de l'évolution vers un poste de lead technique. Proposer un mentorat avec un architecte senior. Discuter de sa participation aux recrutements.",
+        "Aborder la question de l'évolution vers un poste de responsable exploitation adjoint. Proposer un accompagnement terrain avec le directeur d'exploitation. Discuter de sa participation aux réunions clients.",
     },
     session: {
       objectifsNPlus1: [
         {
-          intitule: "Prendre le lead technique sur le projet de refonte du portail client",
+          intitule: "Prendre en charge la coordination des tournées régionales Est",
           echeance: "2025-12-31",
-          commentaireManager: "Projet stratégique, accompagnement prévu par l'architecte référent.",
+          commentaireManager: "Secteur stratégique, accompagnement prévu avec le responsable régional.",
         },
         {
-          intitule: "Obtenir la certification AWS Developer Associate",
+          intitule: "Obtenir la certification de formation réglementation transport",
           echeance: "2025-09-30",
           commentaireManager: "Formation prise en charge par l'entreprise.",
         },
         {
-          intitule: "Mentorer un développeur junior pendant 6 mois",
+          intitule: "Former un nouvel agent d'exploitation pendant 3 mois",
           echeance: "2025-06-30",
-          commentaireManager: "Objectif de développement des soft skills.",
+          commentaireManager: "Objectif de transmission des compétences.",
         },
       ],
       decisionsFormation: [
         {
-          intitule: "Formation Architecture Logicielle - 3 jours",
+          intitule: "Formation Réglementation Transport - 2 jours",
           origine: "manager",
           commentaire: "Planifiée pour avril 2025.",
         },
         {
-          intitule: "Certification AWS Developer Associate",
+          intitule: "Formation Gestion des Litiges Transport",
           origine: "collaborateur",
-          commentaire: "Auto-formation + passage de certification avant octobre.",
+          commentaire: "Programmée pour le second semestre.",
         },
       ],
       notesSeance:
-        "Entretien très positif. Sophie est enthousiaste à l'idée de prendre plus de responsabilités. Nous avons défini ensemble un plan d'évolution vers le rôle de lead technique sur 18 mois. Point intermédiaire prévu en septembre pour faire le bilan de la certification AWS.",
+        "Entretien très positif. Sophie est enthousiaste à l'idée de prendre plus de responsabilités sur le secteur Est. Nous avons défini ensemble un plan d'évolution vers un rôle de responsable exploitation adjoint sur 18 mois. Point intermédiaire prévu en septembre.",
       bilan: {
         syntheseGlobale:
-          "Excellent entretien, Sophie démontre une vraie maturité professionnelle et une vision claire de son évolution. Les objectifs fixés sont ambitieux mais réalistes compte tenu de ses capacités démontrées cette année.",
+          "Excellent entretien, Sophie démontre une vraie maturité professionnelle et une vision claire de son évolution chez Jeantet Transport. Les objectifs fixés sont ambitieux mais réalistes compte tenu de ses capacités démontrées cette année.",
         pointsAmeliorer: [
           {
-            intitule: "Estimation des charges projets",
+            intitule: "Gestion des situations de crise",
             echeance: "2025-06-30",
-            remarque: "Accompagnement par le chef de projet sur les prochaines estimations.",
+            remarque: "Accompagnement par le directeur d'exploitation sur les prochaines situations complexes.",
           },
           {
-            intitule: "Prise de parole en réunion client",
+            intitule: "Relations clients grands comptes",
             echeance: "2025-09-30",
-            remarque: "Participation progressive aux réunions de comité projet.",
+            remarque: "Participation progressive aux réunions de suivi clients.",
           },
         ],
         remarquesCollaborateur:
-          "Très satisfaite de cet échange et des perspectives d'évolution proposées. Je suis motivée par les objectifs fixés et j'ai hâte de relever ces nouveaux défis.",
+          "Très satisfaite de cet échange et des perspectives d'évolution proposées. Je suis motivée par les objectifs fixés et j'ai hâte de relever ces nouveaux défis au sein de Jeantet Transport.",
         remarquesManager:
-          "Sophie est une collaboratrice clé de l'équipe. Son évolution vers un rôle de lead est naturelle et méritée. Je m'engage à l'accompagner dans cette progression.",
+          "Sophie est une collaboratrice clé de l'équipe exploitation. Son évolution vers un rôle de responsable adjoint est naturelle et méritée. Je m'engage à l'accompagner dans cette progression.",
       },
       // Remarques du manager sur les champs des formulaires
       remarquesChamps: {
         "collab_evaluation:2": "L'auto-évaluation sur l'autonomie est cohérente avec mes observations. Point d'attention à suivre.",
-        "collab_competence:1": "Effectivement, l'accompagnement reste nécessaire sur les sujets d'architecture.",
+        "collab_competence:1": "Effectivement, l'accompagnement reste nécessaire sur la gestion de crise.",
         "manager_axe:0": "Priorité pour l'année à venir, à intégrer dans le plan de développement.",
       },
     },
@@ -334,36 +334,36 @@ const WIZARD_DATA: WizardEntretienData[] = [
     },
   },
   {
-    // Entretien annuel Marc Dubois - planifié (données de préparation)
+    // Entretien annuel Marc Dubois - Chauffeur - planifié (données de préparation)
     entretienId: "ent-2",
     preCollaborateur: {
       ressentiGeneral:
-        "Une année chargée avec beaucoup de projets en parallèle. Je suis globalement satisfait de mes réalisations mais j'ai ressenti une certaine fatigue en fin d'année. J'aimerais mieux prioriser mes missions l'année prochaine.",
+        "Une année chargée avec beaucoup de tournées et de kilomètres parcourus. Je suis globalement satisfait de mon travail mais j'ai ressenti une certaine fatigue en fin d'année avec les livraisons de fin d'année. J'aimerais des tournées mieux réparties l'année prochaine.",
       sentimentGlobal: 3,
       evaluations: [
         {
           theme: "Résultats et qualité du travail",
           score: 4,
           commentaireCollaborateur:
-            "Tous les projets ont été livrés dans les délais. La qualité est au rendez-vous selon les retours clients.",
+            "Toutes mes livraisons ont été effectuées dans les délais. Les clients sont satisfaits selon les retours de l'exploitation.",
         },
         {
           theme: "Collaboration avec l'équipe",
           score: 4,
           commentaireCollaborateur:
-            "Bonne coordination avec les équipes techniques. Quelques tensions ponctuelles sur les priorités.",
+            "Bonne coordination avec l'équipe exploitation et les autres chauffeurs. Quelques tensions ponctuelles sur les affectations de véhicules.",
         },
         {
           theme: "Développement des compétences",
           score: 3,
           commentaireCollaborateur:
-            "Peu de temps consacré à la formation cette année, trop pris par l'opérationnel.",
+            "Peu de temps consacré à la formation cette année, beaucoup de routes à faire.",
         },
         {
           theme: "Équilibre vie pro / perso",
           score: 2,
           commentaireCollaborateur:
-            "Beaucoup d'heures supplémentaires, difficile de déconnecter. Point d'attention pour l'année prochaine.",
+            "Beaucoup de découchés et d'heures de route, difficile pour la vie de famille. Point d'attention pour l'année prochaine.",
         },
       ],
       ressentiParTheme: [
@@ -373,37 +373,37 @@ const WIZARD_DATA: WizardEntretienData[] = [
       ],
       objectifsNMoins1: [
         {
-          intitule: "Atteindre les objectifs quantitatifs fixés sur votre activité principale",
+          intitule: "Maintenir un taux de livraison à l'heure supérieur à 95%",
           echeance: "Mars 2025",
           avancementCollaborateur: 95,
           commentaireCollaborateur:
-            "Objectifs dépassés sur la plupart des indicateurs de livraison projet.",
+            "Taux de 97% atteint malgré les aléas de circulation et météo.",
         },
         {
-          intitule: "Renforcer la qualité de la relation avec les clients / usagers clés",
+          intitule: "Zéro sinistre responsable sur l'année",
           echeance: "Juin 2025",
           avancementCollaborateur: 80,
           commentaireCollaborateur:
-            "Relations solides avec les clients principaux. Un conflit géré sur le projet Alpha.",
+            "Un accrochage mineur sur parking client, déclaré et traité. Pas de sinistre grave.",
         },
         {
-          intitule: "Développer une nouvelle compétence ou expertise utile à l'équipe",
+          intitule: "Optimiser la consommation de carburant",
           echeance: "Décembre 2025",
           avancementCollaborateur: 50,
           commentaireCollaborateur:
-            "Formation Agile à moitié suivie, pas eu le temps de terminer.",
+            "Réduction de 5% de la consommation grâce à l'écoconduite, mais objectif de 10% non atteint.",
         },
       ],
       besoinsFormation: [
         {
-          intitule: "Formation gestion du stress et priorisation",
+          intitule: "Formation écoconduite avancée",
           origine: "collaborateur",
-          commentaire: "Pour mieux gérer la charge de travail et éviter l'épuisement.",
+          commentaire: "Pour continuer à améliorer ma consommation et réduire la fatigue.",
         },
         {
-          intitule: "Certification PMP",
+          intitule: "Formation gestes et postures / ergonomie",
           origine: "collaborateur",
-          commentaire: "Objectif de montée en compétences sur la méthodologie projet.",
+          commentaire: "Prévenir les douleurs dorsales liées à la conduite prolongée.",
         },
       ],
       competences: [
@@ -411,67 +411,67 @@ const WIZARD_DATA: WizardEntretienData[] = [
           competence: "Atteinte des objectifs annuels",
           niveauAttendu: 5,
           niveauCollaborateur: 5,
-          commentaire: "Tous les projets livrés, objectifs dépassés sur plusieurs indicateurs.",
+          commentaire: "Toutes les livraisons effectuées, très bon taux de service.",
         },
         {
           competence: "Autonomie et prise d'initiative",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
-          commentaire: "Autonome sur la gestion de mes projets, force de proposition.",
+          commentaire: "Autonome sur mes tournées, je gère bien les imprévus sur la route.",
         },
         {
           competence: "Qualité de la communication",
           niveauAttendu: 4,
           niveauCollaborateur: 3,
-          commentaire: "Bonne communication écrite, à améliorer à l'oral en situation de stress.",
+          commentaire: "Bonne communication avec les clients lors des livraisons, à améliorer avec l'exploitation pour les remontées terrain.",
         },
       ],
     },
     preManager: {
       syntheseManager:
-        "Marc est un chef de projet fiable et performant. Ses résultats sont excellents mais je suis préoccupé par sa charge de travail excessive. Nous devons trouver un meilleur équilibre pour éviter l'épuisement. Son expertise métier est précieuse pour l'équipe.",
+        "Marc est un chauffeur fiable et professionnel. Ses résultats sont excellents avec un très bon taux de service, mais je suis préoccupé par son équilibre vie pro/perso avec le nombre de découchés. Nous devons trouver une meilleure organisation. Son expérience de la route et sa connaissance des clients sont précieuses.",
       evaluationsManager: [
         {
           theme: "Qualité du travail",
           score: 5,
-          commentaire: "Livrables de très haute qualité, rigueur exemplaire.",
+          commentaire: "Livraisons soignées, très bon relationnel client, véhicule bien entretenu.",
         },
         {
           theme: "Respect des délais",
           score: 5,
-          commentaire: "100% des projets livrés dans les temps cette année.",
+          commentaire: "Excellent taux de ponctualité, bonne gestion des aléas route.",
         },
         {
           theme: "Autonomie",
           score: 5,
-          commentaire: "Totalement autonome sur la gestion de son portefeuille projets.",
+          commentaire: "Totalement autonome sur ses tournées, sait gérer les imprévus.",
         },
         {
           theme: "Esprit d'équipe",
           score: 4,
-          commentaire: "Bon esprit d'équipe, parfois trop absorbé par ses projets pour aider les autres.",
+          commentaire: "Bon esprit d'équipe, aide volontiers les nouveaux chauffeurs.",
         },
         {
           theme: "Communication",
           score: 3,
-          commentaire: "Communication efficace mais peut être plus synthétique en réunion.",
+          commentaire: "Remontées terrain parfois tardives, à améliorer sur la traçabilité.",
         },
       ],
       pointsForts: [
-        "Excellence opérationnelle et rigueur dans le suivi de projet",
-        "Expertise métier transport/logistique reconnue",
-        "Capacité à gérer plusieurs projets complexes en parallèle",
-        "Orientation résultat et engagement fort",
+        "Excellent taux de service et ponctualité exemplaire",
+        "Connaissance approfondie des clients et des itinéraires",
+        "Conduite prudente et professionnelle",
+        "Engagement fort et sens du service client",
       ],
       axesProgres: [
-        "Apprendre à déléguer davantage pour réduire la charge",
-        "Améliorer la communication synthétique en comité de direction",
-        "Prendre du recul et mieux prioriser les urgences",
+        "Améliorer les remontées d'information vers l'exploitation",
+        "Utiliser davantage les outils de traçabilité (smartphone, TMS)",
+        "Mieux anticiper les besoins de maintenance du véhicule",
       ],
       besoinsFormationManager:
-        "Formation management du temps et délégation prioritaire. La certification PMP serait un atout mais attention à ne pas surcharger son planning.",
+        "Formation écoconduite recommandée pour optimiser la consommation. La formation gestes et postures est importante pour sa santé sur le long terme.",
       notesPreparatoires:
-        "Point important sur l'équilibre vie pro/perso. Proposer un accompagnement coaching. Discuter de la possibilité de recruter un assistant chef de projet pour alléger sa charge.",
+        "Point important sur l'équilibre vie pro/perso et les découchés. Étudier la possibilité de tournées plus locales. Discuter du renouvellement de son véhicule prévu au S2.",
     },
     session: {
       objectifsNPlus1: [],

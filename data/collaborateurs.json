@@ -3,8 +3,8 @@
     "id": "col-1",
     "nom": "Martin",
     "prenom": "Sophie",
-    "email": "sophie.martin@entreprise.fr",
-    "poste": "Développeuse fullstack",
+    "email": "sophie.martin@jeantet-transport.fr",
+    "poste": "Agent d'exploitation",
     "dateArrivee": "2023-01-15",
     "avatarUrl": "https://randomuser.me/api/portraits/women/12.jpg"
   },
@@ -12,8 +12,8 @@
     "id": "col-2",
     "nom": "Dubois",
     "prenom": "Marc",
-    "email": "marc.dubois@entreprise.fr",
-    "poste": "Chef de projet",
+    "email": "marc.dubois@jeantet-transport.fr",
+    "poste": "Chauffeur",
     "dateArrivee": "2022-11-02",
     "avatarUrl": "https://randomuser.me/api/portraits/men/45.jpg"
   }

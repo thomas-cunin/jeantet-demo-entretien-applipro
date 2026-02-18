@@ -33,17 +33,17 @@ const COMPETENCES_EXEMPLES = [
 const OBJECTIFS_N_1 = [
   {
     intitule:
-      "Atteindre les objectifs quantitatifs fixés sur votre activité principale",
+      "Améliorer le taux de service livraison à 98%",
     echeance: "Mars 2025",
   },
   {
     intitule:
-      "Renforcer la qualité de la relation avec les clients / usagers clés",
+      "Optimiser les tournées pour réduire les kilomètres à vide de 10%",
     echeance: "Juin 2025",
   },
   {
     intitule:
-      "Développer une nouvelle compétence ou expertise utile à l'équipe",
+      "Maîtriser le nouveau logiciel TMS (Transport Management System)",
     echeance: "Décembre 2025",
   },
 ];
@@ -318,7 +318,7 @@ export function PreparationCollaborateurForm() {
           <textarea
             value={besoinsFormation}
             onChange={(e) => setBesoinsFormation(e.target.value)}
-            placeholder="Ex. Formation Excel avancé, gestion du stress, conduite de réunions..."
+            placeholder="Ex. Formation réglementation transport, gestion des litiges, optimisation tournées..."
             rows={4}
             className="w-full px-4 py-3 rounded-xl border border-gris-20 bg-gris-05 text-noir text-[15px] placeholder-gris-40 focus:outline-none focus:ring-2 focus:ring-applipro resize-none"
           />
