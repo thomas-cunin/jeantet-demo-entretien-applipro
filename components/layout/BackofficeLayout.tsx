@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+
+// Vider le localStorage à chaque visite pour toujours afficher les données fraîches
+const STORAGE_KEYS_TO_CLEAR = [
+  "demo-entretiens-wizard-v1",
+  "demo-entretiens-with-details-v1",
+];
 
 const nav = [
   { href: "/preparation-collaborateur", label: "Formulaire collaborateur" },
@@ -54,6 +60,13 @@ export function BackofficeLayout({
 }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Vider le localStorage au montage pour avoir les données fraîches
+  useEffect(() => {
+    STORAGE_KEYS_TO_CLEAR.forEach((key) => {
+      localStorage.removeItem(key);
+    });
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-gris-05">
