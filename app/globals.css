@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --applipro-primary: #3374FF;
+  --applipro-primary-dark: #0E0E52;
+  --applipro-blanc: #F7F7FF;
+  --applipro-noir: #121624;
+  --font-inter: "Inter", system-ui, sans-serif;
+}
+
+body {
+  @apply bg-gris-05 text-noir antialiased;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

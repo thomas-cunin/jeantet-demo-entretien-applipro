@@ -1,0 +1,113 @@
+﻿APPLIPRO
+Module Entretiens Individuels
+Cahier des charges fonctionnel - Groupe Transport Jeantais
+Client
+Groupe Transport Jeantais
+Secteur
+Transport & Logistique
+Entités
+5-6 sociétés (S2PL, Jeantais, Pontarlier, Beaune, Scott, Chemloc)Population cible
+~225 collaborateurs (conducteurs + sédentaires)
+SIRH existant
+Aucun - logiciel de paie Sage uniquement
+Interlocutrice
+Directrice Achats / QHSE & Chef de projet - en lien avec la DRH
+Document établi à partir de la consultation du 18 février 2026 - Usage interne Applipro
+
+
+1. CONTEXTE ET ENJEUX
+1.1 Situation actuelle
+Le Groupe Transport Jeantais gère aujourd'hui ses entretiens individuels via des formulaires papier imprimés. La direction a exprimé un fort mécontentement quant à ce mode de fonctionnement, notamment en raison de :
+
+• L'absence de traçabilité et de suivi centralisé des entretiens réalisés
+• Un faible taux de complétion : les collaborateurs et managers repoussent systématiquement la saisie
+• Aucune consolidation automatique des besoins en formation - la DRH doit lire chaque entretien manuellement
+• Une gestion multi-entités complexe sans vision transversale
+• Une population de conducteurs sans adresse mail professionnelle ni accès ordinateur
+
+1.2 Objectifs du module
+Le module entretiens individuels doit permettre de digitaliser l'ensemble du cycle d'entretien annuel, de la préparation à la validation finale, tout en restant accessible aux profils les moins digitalisés (conducteurs, opérationnels terrain). Il doit également générer automatiquement les données nécessaires au pilotage RH (plan de formation, indicateurs RSE, suivi des compétences).
+
+1.3 Concurrents évalués par le client
+Le groupe a déjà consulté plusieurs éditeurs spécialisés avant de soumettre ce besoin à Applipro :
+
+• Lucca - offre SIRH large avec module entretien
+• Zest - spécialisé entretien, montée en compétences et communication interne
+• Up RH by Arketeam - SIRH global avec module entretien
+
+Positionnement prix observé
+Abonnement récurrent : entre 3 €/pers/mois et 5-6 €/pers/mois. Mise en place : de 850 € (paramétrage simplifié) à ~10 000 € (accompagnement complet 10 jours). Maintenance annuelle complémentaire : jusqu'à 1 550 €/an selon prestataire.
+2. ACTEURS ET PROFILS UTILISATEURS
+Le module implique trois profils distincts avec des droits et vues différenciés :
+
+FonctionnalitéDescriptionProfil concernéCollaborateur / SalariéAccède à son formulaire de pré-entretien, suit ses objectifs en cours d'année, signe son compte-renduConducteur, sédentaireManagerPrépare l'entretien de ses collaborateurs, conduit la session, valide le CR, a accès à son tableau de bordResponsable d'équipeDRH / AdministrateurVision globale multi-entités, consolidation des besoins formation, indicateurs RSE, pilotage des campagnesDRH Groupe, RH par entité
+3. SPÉCIFICATIONS FONCTIONNELLES DÉTAILLÉES
+3.1 Accessibilité et authentification
+Contrainte critique identifiée : les conducteurs ne disposent pas d'adresse mail professionnelle et n'ont pas accès à un ordinateur. L'accès doit donc être possible depuis un téléphone personnel.
+
+FonctionnalitéDescriptionProfil concernéMulti-supportAccès via smartphone, tablette ou ordinateurTous profilsAuthentification simpleLogin / mot de passe sans obligation d'email professionnel - lien d'accès possible par SMSCollaborateurNotifications push et mailAlertes envoyées pour chaque action requise (préparation, relance, validation, clôture)Tous profilsInterface ultra-simplifiéeNavigation intuitive, grands boutons, formulaires sans listes déroulantesCollaborateur
+3.2 Gestion des campagnes d'entretien
+L'administrateur (DRH) pilote les campagnes d'entretien depuis le back-office. Chaque campagne est définie par une plage de dates et peut être déclinée par entité, service ou groupe de collaborateurs.
+
+FonctionnalitéDescriptionProfil concernéCréation de campagneDéfinition d'une période d'ouverture et de clôture (ex : 1er jan. → 30 avr.), assignment par groupe ou entitéDRHTrames différenciéesPossibilité de créer des formulaires distincts par métier (conducteur vs sédentaire vs manager)DRHDéclenchement automatiqueEnvoi automatique du formulaire aux collaborateurs concernés à l'ouverture de campagneSystèmeGestion multi-entitésCampagne globale ou par société, avec tableau de bord distinct par entitéDRH
+3.3 Phase de préparation (avant entretien)
+3.3.1 Côté collaborateur
+FonctionnalitéDescriptionProfil concernéFormulaire de pré-entretienAccès à sa trame personnalisée depuis n'importe quel deviceCollaborateurMode brouillonSaisie progressive, enregistrement automatique, retour possible jusqu'à la date d'entretienCollaborateurÉvaluation qualitativeNotation via étoiles, smileys ou jauges colorées (rouge/orange/vert) sur des critères de bien-être et satisfactionCollaborateurChamps libresZones de saisie libre pour compléter les notations ou exprimer des remarquesCollaborateurSuivi des objectifs N-1Visualisation des objectifs fixés lors du dernier entretien avec possibilité de renseigner son avancement en % tout au long de l'annéeCollaborateurBesoins en formationChamp dédié pour exprimer ses souhaits de formation de manière libre (sans bibliothèque imposée)CollaborateurAuto-évaluation compétencesÉvaluation de ses compétences actuelles par rapport aux exigences de son posteCollaborateur
+3.3.2 Côté manager
+FonctionnalitéDescriptionProfil concernéFormulaire managerTrame distincte pour préparer l'entretien de chaque collaborateurManagerMode brouillonMêmes possibilités d'enregistrement progressif que le collaborateurManagerVision de son portefeuilleTableau de bord listant tous ses entretiens : à planifier / planifié / en cours / terminéManagerRappels automatiquesNotifications de relance si des entretiens ne sont pas planifiés ou complétésSystème → Manager
+3.4 Session d'entretien (en face-à-face)
+L'entretien reste prioritairement réalisé en présentiel. Le module doit faciliter la conduite de la session sans s'y substituer.
+
+FonctionnalitéDescriptionProfil concernéVue comparative managerAffichage côte à côte des réponses du collaborateur et celles du manager pour faciliter la discussionManagerPrise de notes en séanceChamp de saisie disponible pour le manager pendant l'entretienManagerDéfinition des objectifs N+1Saisie des nouveaux objectifs, mesurables, avec indicateur de progression à mettre à jour durant l'annéeManager + CollaborateurDécisions de formationEnregistrement des besoins identifiés pendant l'entretien (en complément ou en remplacement des souhaits exprimés)Manager + DRH
+3.5 Phase de validation et signature
+À l'issue de l'entretien, un circuit de validation en boucle est mis en place jusqu'à accord des deux parties.
+
+FonctionnalitéDescriptionProfil concernéAccès au CR pour le collaborateurLecture du compte-rendu complété pendant l'entretien, en dehors de la séance, au calmeCollaborateurRemarques du collaborateurChamp dédié pour annoter le CR sans pouvoir modifier le contenu validé en séanceCollaborateurValidation collaborateurSignature électronique ou validation numérique du compte-renduCollaborateurNotification managerAlerte automatique au manager dès validation ou remarque du collaborateurSystème → ManagerBoucle de révisionSi remarques émises : nouvelle rencontre possible, puis re-validation des deux partiesManager + CollaborateurClôture et notification DRHAlerte DRH automatique quand l'entretien est entièrement validé par les deux partiesSystème → DRH
+💡 La signature électronique peut être intégrée via le module YouSign déjà disponible dans Applipro.
+
+4. TABLEAUX DE BORD ET PILOTAGE
+4.1 Tableau de bord Manager
+FonctionnalitéDescriptionProfil concernéSuivi de son périmètreVue de tous ses collaborateurs avec statut d'avancement de l'entretienManagerIndicateurs clésNombre d'entretiens : total / planifiés / en cours / clôturésManagerAlertesEntretiens non démarrés ou en retard mis en évidenceManager
+4.2 Tableau de bord DRH - vision globale
+FonctionnalitéDescriptionProfil concernéVue multi-entitésSuivi par société, puis par service, puis par collaborateurDRHTaux de complétionPourcentage d'entretiens clôturés par entité et globalDRHConsolidation formationExtraction automatique de tous les besoins en formation identifiés, triés par : entité / service / collaborateur / type de formationDRHIndicateurs RSESuivi du % de formations non-obligatoires réalisées par entité (reporting RSE)DRHCartographie des compétencesVue agrégée des écarts compétences/poste pour anticiper les besoins futursDRHExport ExcelExtraction de l'ensemble des données pour traitement externeDRH
+5. GESTION DES OBJECTIFS ET DES COMPÉTENCES
+5.1 Suivi des objectifs en cours d'année
+Entre deux entretiens, le collaborateur dispose d'un mini-tableau de bord personnel lui permettant de suivre l'avancement de ses objectifs. Ce suivi est autonome et permet une préparation plus qualitative du prochain entretien.
+
+• Objectifs définis lors de l'entretien, mesurables et datés
+• Indicateur de progression en % mis à jour librement par le collaborateur
+• Visibilité du manager sur l'avancement si souhaité
+
+5.2 Gestion des compétences
+Le module doit permettre une approche comparative des compétences entre le référentiel du poste et le niveau réel du collaborateur, afin d'identifier des besoins de développement et d'anticiper les évolutions métiers.
+
+• Référentiel de compétences lié à chaque fiche de poste
+• Auto-évaluation du collaborateur et évaluation croisée manager
+• Visualisation des écarts compétences-poste
+• Projection sur les compétences futures nécessaires (GPEC simplifiée)
+
+6. PLAN DE FORMATION INTÉGRÉ
+La remontée automatique des besoins en formation est l'une des fonctionnalités à plus forte valeur ajoutée pour la DRH. Aujourd'hui, ces informations sont collectées de façon manuelle ou via des campagnes mail ad hoc.
+
+FonctionnalitéDescriptionProfil concernéSaisie libre par le collaborateurExpression des besoins sans bibliothèque imposée pour éviter les biais de sélectionCollaborateurSaisie complémentaire en séanceLe manager peut ajouter ou ajuster les besoins identifiés lors de l'entretienManagerConsolidation automatiqueTableau récapitulatif des besoins par : entité / service / salarié / type de formationDRHAide au plan de formationLa DRH peut construire son plan de formation annuel depuis l'outil sans ressaisieDRHIndicateur RSE% de formations non-obligatoires détecté automatiquement pour les rapports RSEDRH
+7. CONTRAINTES TECHNIQUES ET D'INTÉGRATION
+FonctionnalitéDescriptionProfil concernéHébergement FranceDonnées hébergées exclusivement en France (IONOS) - conformité RGPDTechniqueMulti-entitésArchitecture permettant une identité visuelle par société et une gestion des droits par périmètreTechniqueGestion des droitsAccès distincts par rôle : collaborateur / manager / DRH entité / DRH groupeTechniqueAucun email pro requisAuthentification possible sans adresse professionnelle (SMS ou identifiant dédié)UX / TechniqueResponsive mobile firstInterface prioritairement conçue pour smartphone (population conducteurs)UXIntégration Sage (optionnel)Import des données RH de base depuis Sage pour pré-remplissage des fiches collaborateursIntégrationExport de donnéesExport Excel de l'ensemble des données entretiens et besoins formationTechniqueCoffre-fort numériqueOption : stockage sécurisé des comptes-rendus d'entretien dans l'espace personnel du collaborateurOption
+8. CRITÈRES DE SUCCÈS ET POINTS DE VIGILANCE
+8.1 Critères de succès
+• Taux de complétion des entretiens supérieur à l'existant papier
+• Accessibilité validée sur smartphone Android sans adresse mail professionnelle
+• Tableau de bord DRH opérationnel dès la première campagne
+• Plan de formation généré automatiquement sans ressaisie
+• Adoption effective par la population conducteurs (profils peu digitalisés)
+
+8.2 Points de vigilance
+• Nécessité de co-construire les trames d'entretien avec la DRH et les managers avant développement
+• La signature électronique implique une vérification de conformité légale (valeur probatoire du CR signé)
+• La gestion des objectifs inter-annuels implique un historique par collaborateur à conserver et sécuriser
+• Le module doit pouvoir évoluer lors d'acquisitions futures (croissance externe en cours)
+
+9. PROCHAINES ÉTAPES PROPOSÉES
+FonctionnalitéDescriptionProfil concernéÉtape 1Validation technique de la faisabilité par l'équipe dev AppliproAppliproÉtape 2Atelier de co-construction des trames d'entretien avec la DRH (1-2h)Applipro + ClientÉtape 3Chiffrage et proposition commerciale dédiée au module entretiensAppliproÉtape 4Présentation au Comité de Direction du Groupe JeantaisClientÉtape 5Développement et tests - livraison cible : fin 2026Applipro
+Note stratégique Applipro
+Ce module, développé sur mesure pour Transport Jeantais, a vocation à être mutualisé et commercialisé auprès de l'ensemble du portefeuille clients. L'investissement en développement est donc partiellement amorti par la valeur de création d'un nouveau module générique dans l'offre Applipro.
+Applipro - EFCM SARL - Document confidentiel - Février 2026

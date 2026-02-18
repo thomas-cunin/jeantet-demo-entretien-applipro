@@ -1,0 +1,47 @@
+[
+  {
+    "id": "col-1",
+    "nom": "Martin",
+    "prenom": "Sophie",
+    "email": "sophie.martin@entreprise.fr",
+    "poste": "Développeuse fullstack",
+    "dateArrivee": "2025-01-15",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/12.jpg"
+  },
+  {
+    "id": "col-2",
+    "nom": "Dubois",
+    "prenom": "Marc",
+    "email": "marc.dubois@entreprise.fr",
+    "poste": "Chef de projet",
+    "dateArrivee": "2024-11-02",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  {
+    "id": "col-3",
+    "nom": "Bernard",
+    "prenom": "Julie",
+    "email": "julie.bernard@entreprise.fr",
+    "poste": "Designer UX",
+    "dateArrivee": "2025-02-01",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/44.jpg"
+  },
+  {
+    "id": "col-4",
+    "nom": "Petit",
+    "prenom": "Thomas",
+    "email": "thomas.petit@entreprise.fr",
+    "poste": "Data analyst",
+    "dateArrivee": "2024-09-10",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/18.jpg"
+  },
+  {
+    "id": "col-5",
+    "nom": "Robert",
+    "prenom": "Léa",
+    "email": "lea.robert@entreprise.fr",
+    "poste": "Responsable RH",
+    "dateArrivee": "2024-06-20",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/68.jpg"
+  }
+]
