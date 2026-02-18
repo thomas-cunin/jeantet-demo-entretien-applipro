@@ -77,7 +77,7 @@ export function PreparationCollaborateurForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="pb-24">
+    <form onSubmit={handleSubmit} className="pb-8">
       {/* En-tête type app mobile */}
       <div className="bg-applipro-dark text-white px-4 pt-6 pb-8 rounded-b-2xl shadow-lg">
         <p className="text-applipro-20 text-sm font-medium">
@@ -95,7 +95,7 @@ export function PreparationCollaborateurForm() {
         {/* Votre entretien de [TYPE] — manager, date, couleurs chaleureuses */}
         <section className="rounded-2xl overflow-hidden shadow-md border-2 border-applipro-20 bg-gradient-to-br from-applipro-05 to-white p-4 sm:p-5">
           <h2 className="text-base font-bold text-applipro-dark mb-4">
-            Votre entretien d&apos;{ENTRETIEN_CONTEXTE.type.toLowerCase()}
+            Votre entretien {ENTRETIEN_CONTEXTE.type.toLowerCase() === "annuel" ? "annuel" : `d'${ENTRETIEN_CONTEXTE.type.toLowerCase()}`}
           </h2>
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-3">
@@ -354,13 +354,13 @@ export function PreparationCollaborateurForm() {
           </div>
         </section>
 
-        {/* Bouton envoyer — fixe en bas sur mobile */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-white border-t border-gris-10 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+        {/* Bouton envoyer — en bas du formulaire, même largeur que les champs */}
+        <div className="mt-6 pt-4">
           <Button
             type="submit"
             variant="primary"
             size="regular"
-            className="w-full py-3.5 text-base"
+            className="w-full py-3 text-base"
           >
             {soumis ? "Formulaire envoyé ✓" : "Enregistrer ma préparation"}
           </Button>

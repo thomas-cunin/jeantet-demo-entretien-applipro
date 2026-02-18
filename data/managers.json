@@ -1,5 +1,9 @@
 [
-  {"id":"mgr-1","nom":"Lefebvre","prenom":"Pierre","email":"pierre.lefebvre@entreprise.fr","avatarUrl":"https://randomuser.me/api/portraits/men/32.jpg"},
-  {"id":"mgr-2","nom":"Moreau","prenom":"Anne","email":"anne.moreau@entreprise.fr","avatarUrl":"https://randomuser.me/api/portraits/women/65.jpg"},
-  {"id":"mgr-3","nom":"Simon","prenom":"David","email":"david.simon@entreprise.fr","avatarUrl":"https://randomuser.me/api/portraits/men/52.jpg"}
+  {
+    "id": "mgr-1",
+    "nom": "Lefebvre",
+    "prenom": "Pierre",
+    "email": "pierre.lefebvre@entreprise.fr",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+  }
 ]

@@ -152,9 +152,9 @@ export function EntretienWizard({ entretien, wizard }: EntretienWizardProps) {
 
 function StepHeader({ currentIndex }: { currentIndex: number }) {
   return (
-    <div className="bg-blanc rounded-2xl shadow-sm border border-applipro-05 px-4 py-5 sm:px-6">
+    <div className="bg-blanc rounded-2xl shadow-sm border border-applipro-05 px-4 py-5 sm:px-6 overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <ol className="flex flex-1 items-center justify-between gap-3">
+        <ol className="flex flex-1 items-stretch justify-between gap-0 min-w-0">
           {STEPS.map((step, index) => {
             const isActive = index === currentIndex;
             const isCompleted = index < currentIndex;
@@ -162,18 +162,19 @@ function StepHeader({ currentIndex }: { currentIndex: number }) {
             return (
               <li
                 key={step.key}
-                className="flex-1 flex flex-col items-center text-center gap-1"
+                className="flex-1 flex flex-col items-center text-center gap-1 min-w-0 max-w-[25%]"
               >
-                <div className="flex items-center w-full max-w-[140px]">
-                  {index > 0 && (
-                    <div
-                      className={`h-px flex-1 ${
-                        isCompleted
+                <div className="flex items-center w-full flex-1 min-w-0">
+                  <div
+                    className={`h-px flex-1 min-w-0 ${
+                      index === 0
+                        ? "bg-transparent"
+                        : index <= currentIndex
                           ? "bg-applipro"
                           : "bg-gris-20"
-                      }`}
-                    />
-                  )}
+                    }`}
+                    aria-hidden
+                  />
                   <div
                     className={`flex items-center justify-center rounded-full border-2 w-8 h-8 shrink-0 ${
                       isActive
@@ -182,23 +183,25 @@ function StepHeader({ currentIndex }: { currentIndex: number }) {
                           ? "border-applipro bg-applipro-05 text-applipro-dark"
                           : "border-gris-20 bg-white text-gris-60"
                     }`}
+                    aria-current={isActive ? "step" : undefined}
                   >
                     <span className="text-[13px] font-semibold">
                       {index + 1}
                     </span>
                   </div>
-                  {index < STEPS.length - 1 && (
-                    <div
-                      className={`h-px flex-1 ${
-                        index < currentIndex
+                  <div
+                    className={`h-px flex-1 min-w-0 ${
+                      index === STEPS.length - 1
+                        ? "bg-transparent"
+                        : index < currentIndex
                           ? "bg-applipro"
                           : "bg-gris-20"
-                      }`}
-                    />
-                  )}
+                    }`}
+                    aria-hidden
+                  />
                 </div>
                 <span
-                  className={`mt-1 text-[13px] px-2 py-0.5 rounded-full ${
+                  className={`mt-1 text-[13px] px-2 py-0.5 rounded-full max-w-full ${
                     isActive
                       ? "bg-applipro-05 text-applipro-dark"
                       : "text-gris-60"
@@ -487,117 +490,128 @@ function PreManagerView({ wizard }: { wizard: WizardEntretienData }) {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-applipro bg-gris-05">
-        <h3 className="text-[14px] font-semibold text-noir mb-2">
-          Synthèse de préparation du manager
-        </h3>
-        <p className="text-[14px] text-gris-80">
-          {preManager.syntheseManager}
+      {/* Section 1 - Synthèse manager */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={1} title="Synthèse manager" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Appréciation générale du travail du collaborateur sur la période écoulée
         </p>
-      </div>
+        <p className="text-[14px] text-gris-80 leading-relaxed">
+          {preManager.syntheseManager || <span className="italic text-gris-40">Non renseigné</span>}
+        </p>
+      </section>
 
-      {/* Évaluations manager */}
-      {preManager.evaluationsManager && preManager.evaluationsManager.length > 0 && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Évaluations du manager
-          </h3>
-          <div className="grid sm:grid-cols-3 gap-3">
-            {preManager.evaluationsManager.map((ev) => (
+      {/* Section 2 - Évaluation par thème (étoiles) */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={2} title="Évaluation par thème" />
+        <p className="text-[13px] text-gris-60 mb-4">
+          Notes de 1 à 5 étoiles pour chaque critère d&apos;évaluation
+        </p>
+        {preManager.evaluationsManager && preManager.evaluationsManager.length > 0 ? (
+          <div className="space-y-4">
+            {preManager.evaluationsManager.map((ev, index) => (
               <div
-                key={ev.theme}
-                className="border border-gris-10 rounded-applipro p-3 bg-blanc"
+                key={`${ev.theme}-${index}`}
+                className="p-3 rounded-xl bg-white border border-gris-10"
               >
-                <p className="text-[13px] font-medium text-noir">
-                  {ev.theme}
-                </p>
-                <div className="mt-1 flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
-                      key={star}
-                      className={`w-4 h-4 ${star <= ev.score ? "text-statut-orange" : "text-gris-20"}`}
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  ))}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
+                  <span className="text-[14px] font-medium text-noir">{ev.theme}</span>
+                  <StarsDisplay score={ev.score} />
                 </div>
                 {ev.commentaire && (
-                  <p className="mt-1 text-[13px] text-gris-60">
-                    {ev.commentaire}
+                  <p className="text-[13px] text-gris-60 mt-2 italic">
+                    &quot;{ev.commentaire}&quot;
                   </p>
                 )}
               </div>
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <p className="text-[13px] text-gris-40 italic p-3 bg-white rounded-xl border border-gris-10">
+            Aucune évaluation renseignée
+          </p>
+        )}
+      </section>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div className="border border-gris-10 rounded-applipro p-3">
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Points forts identifiés
-          </h3>
-          {preManager.pointsForts.length > 0 ? (
-            <ul className="space-y-1 text-[14px] text-noir">
-              {preManager.pointsForts.map((p, i) => (
-                <li key={`${p}-${i}`} className="flex items-start gap-2">
-                  <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-vert shrink-0" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[13px] text-gris-40 italic">Non renseigné</p>
-          )}
+      {/* Section 3 - Points forts du collaborateur */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={3} title="Points forts du collaborateur" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Points forts observés chez le collaborateur
+        </p>
+        {preManager.pointsForts.length > 0 ? (
+          <ul className="space-y-2">
+            {preManager.pointsForts.map((point, index) => (
+              <li
+                key={`${point}-${index}`}
+                className="flex items-center gap-2 p-3 rounded-xl bg-statut-vert/10 border border-statut-vert/20"
+              >
+                <svg className="w-5 h-5 text-statut-vert shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="flex-1 text-[14px] text-noir">{point}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[13px] text-gris-40 italic p-3 bg-white rounded-xl border border-gris-10">
+            Aucun point fort renseigné
+          </p>
+        )}
+      </section>
+
+      {/* Section 4 - Axes de progrès identifiés */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={4} title="Axes de progrès identifiés" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Domaines dans lesquels le collaborateur peut progresser
+        </p>
+        {preManager.axesProgres.length > 0 ? (
+          <ul className="space-y-2">
+            {preManager.axesProgres.map((axe, index) => (
+              <li
+                key={`${axe}-${index}`}
+                className="flex items-center gap-2 p-3 rounded-xl bg-statut-orange/10 border border-statut-orange/20"
+              >
+                <svg className="w-5 h-5 text-statut-orange shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd" />
+                </svg>
+                <span className="flex-1 text-[14px] text-noir">{axe}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[13px] text-gris-40 italic p-3 bg-white rounded-xl border border-gris-10">
+            Aucun axe de progrès renseigné
+          </p>
+        )}
+      </section>
+
+      {/* Section 5 - Besoins en formation identifiés */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={5} title="Besoins en formation identifiés" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Formations recommandées par le manager pour le collaborateur
+        </p>
+        <div className="p-3 rounded-xl bg-white border border-gris-10">
+          <p className="text-[14px] text-gris-80 leading-relaxed">
+            {preManager.besoinsFormationManager || <span className="italic text-gris-40">Non renseigné</span>}
+          </p>
         </div>
-        <div className="border border-gris-10 rounded-applipro p-3">
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Axes de progrès
-          </h3>
-          {preManager.axesProgres.length > 0 ? (
-            <ul className="space-y-1 text-[14px] text-noir">
-              {preManager.axesProgres.map((a, i) => (
-                <li key={`${a}-${i}`} className="flex items-start gap-2">
-                  <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-orange shrink-0" />
-                  <span>{a}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[13px] text-gris-40 italic">Non renseigné</p>
-          )}
+      </section>
+
+      {/* Section 6 - Notes préparatoires */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={6} title="Notes préparatoires" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Notes libres pour préparer l&apos;entretien (points à aborder, questions, rappels)
+        </p>
+        <div className="p-3 rounded-xl bg-white border border-gris-10">
+          <p className="text-[14px] text-gris-80 italic leading-relaxed">
+            {preManager.notesPreparatoires || <span className="text-gris-40">Non renseigné</span>}
+          </p>
         </div>
-      </div>
-
-      {/* Besoins formation identifiés */}
-      {preManager.besoinsFormationManager && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Besoins en formation identifiés
-          </h3>
-          <div className="p-3 border border-gris-10 rounded-applipro bg-gris-05">
-            <p className="text-[14px] text-gris-80">
-              {preManager.besoinsFormationManager}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Notes préparatoires */}
-      {preManager.notesPreparatoires && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Notes préparatoires
-          </h3>
-          <div className="p-3 border border-gris-10 rounded-applipro bg-gris-05">
-            <p className="text-[14px] text-gris-80 italic">
-              {preManager.notesPreparatoires}
-            </p>
-          </div>
-        </section>
-      )}
+      </section>
     </div>
   );
 }
@@ -612,7 +626,12 @@ function SessionView({
   onChangeWizard: (updater: (prev: WizardEntretienData) => WizardEntretienData) => void;
 }) {
   const { preCollaborateur, preManager, session } = wizard;
-  const { bilan } = session;
+  const bilan = session?.bilan ?? {
+    syntheseGlobale: "",
+    pointsAmeliorer: [],
+    remarquesCollaborateur: "",
+    remarquesManager: "",
+  };
 
   return (
     <div className="space-y-6">

@@ -55,11 +55,6 @@ export default function EntretienDetailPage({
               Vue entretien
             </Button>
           </Link>
-          <Link href={`/entretiens/${id}/modifier`}>
-            <Button variant="secondary" size="small">
-              Modifier
-            </Button>
-          </Link>
         </div>
       </div>
 

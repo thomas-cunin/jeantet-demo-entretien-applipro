@@ -1,6 +1,6 @@
 import type { EntretienWithDetails, StatutEntretien } from "./types";
 
-const STORAGE_KEY = "demo-entretiens-with-details-v1";
+const STORAGE_KEY = "demo-entretiens-with-details-v2";
 
 function isBrowser() {
   return typeof window !== "undefined";

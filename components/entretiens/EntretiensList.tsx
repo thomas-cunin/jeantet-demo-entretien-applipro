@@ -19,6 +19,18 @@ function getInitials(prenom: string, nom: string) {
   return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase();
 }
 
+// Vérifie si un entretien est en retard (date prévue dépassée et non clôturé/annulé)
+function isEnRetard(entretien: EntretienWithDetails): boolean {
+  if (entretien.statut === "realise" || entretien.statut === "annule") {
+    return false;
+  }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const datePrevue = new Date(entretien.datePrevue);
+  datePrevue.setHours(0, 0, 0, 0);
+  return datePrevue < today;
+}
+
 const STATUT_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "Tous les états" },
   { value: "en_attente", label: "En attente" },
@@ -32,7 +44,7 @@ const TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "Tous les types" },
   { value: "integration", label: "Intégration" },
   { value: "suivi", label: "Suivi" },
-  { value: "bilan", label: "Bilan" },
+  { value: "bilan", label: "Bilan annuel" },
   { value: "autre", label: "Autre" },
 ];
 
@@ -147,56 +159,80 @@ export function EntretiensList({ entretiens }: EntretiensListProps) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((e) => (
-                <tr
-                  key={e.id}
-                  className="border-b border-gris-10 hover:bg-gris-05/50 transition-colors"
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gris-20 overflow-hidden flex items-center justify-center text-[13px] font-medium text-gris-80">
-                        {e.collaborateur.avatarUrl ? (
-                          <img
-                            src={e.collaborateur.avatarUrl}
-                            alt={`Avatar de ${e.collaborateur.prenom} ${e.collaborateur.nom}`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          getInitials(e.collaborateur.prenom, e.collaborateur.nom)
-                        )}
+              {filtered.map((e) => {
+                const enRetard = isEnRetard(e);
+                return (
+                  <tr
+                    key={e.id}
+                    className={`border-b border-gris-10 hover:bg-gris-05/50 transition-colors ${
+                      enRetard ? "bg-statut-rouge/5" : ""
+                    }`}
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`flex-shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-[13px] font-medium ${
+                          enRetard ? "bg-statut-rouge/20 text-statut-rouge" : "bg-gris-20 text-gris-80"
+                        }`}>
+                          {e.collaborateur.avatarUrl ? (
+                            <img
+                              src={e.collaborateur.avatarUrl}
+                              alt={`Avatar de ${e.collaborateur.prenom} ${e.collaborateur.nom}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            getInitials(e.collaborateur.prenom, e.collaborateur.nom)
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-noir">
+                              {e.collaborateur.prenom} {e.collaborateur.nom}
+                            </span>
+                            {enRetard && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-statut-rouge/10 text-statut-rouge text-[11px] font-semibold uppercase">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                En retard
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[13px] text-gris-60">
+                            {e.manager.prenom} {e.manager.nom} (manager)
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-medium text-noir block">
-                          {e.collaborateur.prenom} {e.collaborateur.nom}
-                        </span>
-                        <span className="text-[13px] text-gris-60">
-                          {e.manager.prenom} {e.manager.nom} (manager)
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <TypeBadge type={e.type} />
-                  </td>
-                  <td className="px-4 py-3 text-[14px] text-gris-80">
-                    {formatDate(e.updatedAt)}
-                  </td>
-                  <td className="px-4 py-3 text-[14px] text-gris-80">
-                    {formatDate(e.datePrevue)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatutBadge statut={e.statut} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/entretiens/${e.id}`}
-                      className="text-applipro text-[14px] font-medium hover:underline"
-                    >
-                      Voir
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-4 py-3">
+                      <TypeBadge type={e.type} />
+                    </td>
+                    <td className="px-4 py-3 text-[14px] text-gris-80">
+                      {formatDate(e.updatedAt)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`text-[14px] ${enRetard ? "text-statut-rouge font-medium" : "text-gris-80"}`}>
+                        {formatDate(e.datePrevue)}
+                      </span>
+                      {enRetard && (
+                        <p className="text-[11px] text-statut-rouge mt-0.5">
+                          Date dépassée
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatutBadge statut={e.statut} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/entretiens/${e.id}`}
+                        className="text-applipro text-[14px] font-medium hover:underline"
+                      >
+                        Voir
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

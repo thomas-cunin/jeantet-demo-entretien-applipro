@@ -13,6 +13,13 @@ interface VueEntretienProps {
   initialWizard: WizardEntretienData;
 }
 
+const DEFAULT_BILAN = {
+  syntheseGlobale: "",
+  pointsAmeliorer: [] as WizardPointAmeliorer[],
+  remarquesCollaborateur: "",
+  remarquesManager: "",
+};
+
 function formatDate(s: string) {
   return new Date(s).toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -182,10 +189,10 @@ function ListePoints({
 
 export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
   const [wizard, setWizard] = useState<WizardEntretienData>(initialWizard);
-  const [notesSeance, setNotesSeance] = useState(initialWizard.session.notesSeance);
-  const [bilan, setBilan] = useState(initialWizard.session.bilan);
+  const [notesSeance, setNotesSeance] = useState(initialWizard.session?.notesSeance ?? "");
+  const [bilan, setBilan] = useState(initialWizard.session?.bilan ?? DEFAULT_BILAN);
   const [remarquesChamps, setRemarquesChamps] = useState<WizardRemarquesChamps>(
-    initialWizard.session.remarquesChamps || {}
+    initialWizard.session?.remarquesChamps || {}
   );
   const [enregistre, setEnregistre] = useState(false);
 
@@ -193,8 +200,8 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
   useEffect(() => {
     const loaded = loadWizardFromStorage(entretien.id, initialWizard);
     setWizard(loaded);
-    setNotesSeance(loaded.session.notesSeance);
-    setBilan(loaded.session.bilan);
+    setNotesSeance(loaded.session?.notesSeance ?? "");
+    setBilan(loaded.session?.bilan ?? DEFAULT_BILAN);
     setRemarquesChamps(loaded.session.remarquesChamps || {});
   }, [entretien.id, initialWizard]);
 
@@ -222,20 +229,26 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
   };
 
   const ajouterPointAmeliorer = () => {
-    setBilan((prev) => ({
-      ...prev,
-      pointsAmeliorer: [
-        ...prev.pointsAmeliorer,
-        { intitule: "", echeance: "", remarque: "" },
-      ],
-    }));
+    setBilan((prev) => {
+      const p = prev ?? DEFAULT_BILAN;
+      return {
+        ...p,
+        pointsAmeliorer: [
+          ...(p.pointsAmeliorer ?? []),
+          { intitule: "", echeance: "", remarque: "" },
+        ],
+      };
+    });
   };
 
   const supprimerPointAmeliorer = (index: number) => {
-    setBilan((prev) => ({
-      ...prev,
-      pointsAmeliorer: prev.pointsAmeliorer.filter((_, i) => i !== index),
-    }));
+    setBilan((prev) => {
+      const p = prev ?? DEFAULT_BILAN;
+      return {
+        ...p,
+        pointsAmeliorer: (p.pointsAmeliorer ?? []).filter((_, i) => i !== index),
+      };
+    });
   };
 
   const updatePointAmeliorer = (
@@ -243,12 +256,15 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
     field: keyof WizardPointAmeliorer,
     value: string
   ) => {
-    setBilan((prev) => ({
-      ...prev,
-      pointsAmeliorer: prev.pointsAmeliorer.map((p, i) =>
-        i === index ? { ...p, [field]: value } : p
-      ),
-    }));
+    setBilan((prev) => {
+      const p = prev ?? DEFAULT_BILAN;
+      return {
+        ...p,
+        pointsAmeliorer: (p.pointsAmeliorer ?? []).map((pi, i) =>
+          i === index ? { ...pi, [field]: value } : pi
+        ),
+      };
+    });
   };
 
   const { collaborateur, manager } = entretien;
@@ -360,19 +376,19 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                   Ressenti général
                 </h3>
                 <p className="text-[14px] text-noir bg-gris-05 rounded-lg p-3 border border-gris-10">
-                  {preCollab.ressentiGeneral || <span className="text-gris-40 italic">Non renseigné</span>}
+                  {preCollab?.ressentiGeneral || <span className="text-gris-40 italic">Non renseigné</span>}
                 </p>
               </div>
             </ChampAvecRemarque>
 
             {/* Évaluations */}
-            {preCollab.evaluations.length > 0 && (
+            {(preCollab?.evaluations ?? []).length > 0 && (
               <div>
                 <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
                   Auto-évaluations
                 </h3>
                 <div className="space-y-3">
-                  {preCollab.evaluations.map((ev, i) => (
+                  {(preCollab?.evaluations ?? []).map((ev, i) => (
                     <ChampAvecRemarque
                       key={i}
                       champId={`collab_evaluation:${i}`}
@@ -391,13 +407,13 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
             )}
 
             {/* Objectifs N-1 */}
-            {preCollab.objectifsNMoins1.length > 0 && (
+            {(preCollab?.objectifsNMoins1 ?? []).length > 0 && (
               <div>
                 <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
                   Objectifs année passée
                 </h3>
                 <div className="space-y-3">
-                  {preCollab.objectifsNMoins1.map((obj, i) => (
+                  {(preCollab?.objectifsNMoins1 ?? []).map((obj, i) => (
                     <ChampAvecRemarque
                       key={i}
                       champId={`collab_objectif:${i}`}
@@ -437,13 +453,13 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
             )}
 
             {/* Besoins formation */}
-            {preCollab.besoinsFormation.length > 0 && (
+            {(preCollab?.besoinsFormation ?? []).length > 0 && (
               <div>
                 <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
                   Besoins en formation
                 </h3>
                 <div className="space-y-3">
-                  {preCollab.besoinsFormation.map((f, i) => (
+                  {(preCollab?.besoinsFormation ?? []).map((f, i) => (
                     <ChampAvecRemarque
                       key={i}
                       champId={`collab_formation:${i}`}
@@ -463,13 +479,13 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
             )}
 
             {/* Compétences */}
-            {preCollab.competences.length > 0 && (
+            {(preCollab?.competences ?? []).length > 0 && (
               <div>
                 <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
                   Compétences
                 </h3>
                 <div className="space-y-3">
-                  {preCollab.competences.map((c, i) => (
+                  {(preCollab?.competences ?? []).map((c, i) => (
                     <ChampAvecRemarque
                       key={i}
                       champId={`collab_competence:${i}`}
@@ -520,19 +536,19 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                   Synthèse manager
                 </h3>
                 <p className="text-[14px] text-noir bg-gris-05 rounded-lg p-3 border border-gris-10">
-                  {preManager.syntheseManager || <span className="text-gris-40 italic">Non renseigné</span>}
+                  {preManager?.syntheseManager || <span className="text-gris-40 italic">Non renseigné</span>}
                 </p>
               </div>
             </ChampAvecRemarque>
 
             {/* Évaluations manager */}
-            {preManager.evaluationsManager.length > 0 && (
+            {(preManager?.evaluationsManager ?? []).length > 0 && (
               <div>
                 <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
                   Évaluations
                 </h3>
                 <div className="space-y-3">
-                  {preManager.evaluationsManager.map((ev, i) => (
+                  {(preManager?.evaluationsManager ?? []).map((ev, i) => (
                     <ChampAvecRemarque
                       key={i}
                       champId={`manager_evaluation:${i}`}
@@ -556,7 +572,7 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                 Points forts
               </h3>
               <div className="space-y-3">
-                {preManager.pointsForts.map((point, i) => (
+                {(preManager?.pointsForts ?? []).map((point, i) => (
                   <ChampAvecRemarque
                     key={i}
                     champId={`manager_pointfort:${i}`}
@@ -571,7 +587,7 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                     </div>
                   </ChampAvecRemarque>
                 ))}
-                {preManager.pointsForts.length === 0 && (
+                {(preManager?.pointsForts ?? []).length === 0 && (
                   <div className="text-[13px] text-gris-40 italic">Aucun élément renseigné</div>
                 )}
               </div>
@@ -583,7 +599,7 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                 Axes de progrès
               </h3>
               <div className="space-y-3">
-                {preManager.axesProgres.map((axe, i) => (
+                {(preManager?.axesProgres ?? []).map((axe, i) => (
                   <ChampAvecRemarque
                     key={i}
                     champId={`manager_axe:${i}`}
@@ -598,14 +614,14 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                     </div>
                   </ChampAvecRemarque>
                 ))}
-                {preManager.axesProgres.length === 0 && (
+                {(preManager?.axesProgres ?? []).length === 0 && (
                   <div className="text-[13px] text-gris-40 italic">Aucun élément renseigné</div>
                 )}
               </div>
             </div>
 
             {/* Besoins formation manager */}
-            {preManager.besoinsFormationManager && (
+            {preManager?.besoinsFormationManager && (
               <ChampAvecRemarque
                 champId="manager_formation"
                 remarquesChamps={remarquesChamps}
@@ -616,14 +632,14 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                     Besoins en formation identifiés
                   </h3>
                   <p className="text-[14px] text-noir bg-gris-05 rounded-lg p-3 border border-gris-10">
-                    {preManager.besoinsFormationManager}
+                    {preManager?.besoinsFormationManager}
                   </p>
                 </div>
               </ChampAvecRemarque>
             )}
 
             {/* Notes préparatoires */}
-            {preManager.notesPreparatoires && (
+            {preManager?.notesPreparatoires && (
               <ChampAvecRemarque
                 champId="manager_notes"
                 remarquesChamps={remarquesChamps}
@@ -634,7 +650,7 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
                     Notes préparatoires
                   </h3>
                   <p className="text-[14px] text-noir bg-gris-05 rounded-lg p-3 border border-gris-10 italic">
-                    {preManager.notesPreparatoires}
+                    {preManager?.notesPreparatoires}
                   </p>
                 </div>
               </ChampAvecRemarque>
@@ -678,8 +694,8 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
             Synthèse globale
           </label>
           <textarea
-            value={bilan.syntheseGlobale}
-            onChange={(e) => setBilan((prev) => ({ ...prev, syntheseGlobale: e.target.value }))}
+            value={bilan?.syntheseGlobale ?? ""}
+            onChange={(e) => setBilan((prev) => ({ ...(prev ?? DEFAULT_BILAN), syntheseGlobale: e.target.value }))}
             placeholder="Résumé global de l'entretien, conclusions principales..."
             rows={4}
             className="w-full px-4 py-3 rounded-lg border border-gris-20 bg-gris-05 text-noir text-[14px] placeholder-gris-40 focus:outline-none focus:ring-2 focus:ring-applipro focus:border-transparent resize-y"
@@ -704,13 +720,13 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
             </button>
           </div>
 
-          {bilan.pointsAmeliorer.length === 0 ? (
+          {(bilan?.pointsAmeliorer ?? []).length === 0 ? (
             <p className="text-[13px] text-gris-40 italic p-4 bg-gris-05 rounded-lg border border-gris-10">
               Aucun point à améliorer défini. Cliquez sur &quot;Ajouter un point&quot; pour en créer.
             </p>
           ) : (
             <div className="space-y-3">
-              {bilan.pointsAmeliorer.map((point, index) => (
+              {(bilan?.pointsAmeliorer ?? []).map((point, index) => (
                 <div
                   key={index}
                   className="p-4 rounded-lg bg-gris-05 border border-gris-10 space-y-3"
@@ -772,9 +788,9 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
               Remarques du collaborateur
             </label>
             <textarea
-              value={bilan.remarquesCollaborateur}
+              value={bilan?.remarquesCollaborateur ?? ""}
               onChange={(e) =>
-                setBilan((prev) => ({ ...prev, remarquesCollaborateur: e.target.value }))
+                setBilan((prev) => ({ ...(prev ?? DEFAULT_BILAN), remarquesCollaborateur: e.target.value }))
               }
               placeholder="Commentaires du collaborateur sur l'entretien..."
               rows={4}
@@ -786,9 +802,9 @@ export function VueEntretien({ entretien, initialWizard }: VueEntretienProps) {
               Remarques du manager
             </label>
             <textarea
-              value={bilan.remarquesManager}
+              value={bilan?.remarquesManager ?? ""}
               onChange={(e) =>
-                setBilan((prev) => ({ ...prev, remarquesManager: e.target.value }))
+                setBilan((prev) => ({ ...(prev ?? DEFAULT_BILAN), remarquesManager: e.target.value }))
               }
               placeholder="Commentaires du manager sur l'entretien..."
               rows={4}

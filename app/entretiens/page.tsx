@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { getEntretiensWithDetails } from "@/lib/data";
-import { Button } from "@/components/ui/Button";
 import { EntretiensList } from "@/components/entretiens/EntretiensList";
 
 export default function EntretiensPage() {
@@ -22,28 +20,14 @@ export default function EntretiensPage() {
 
   return (
     <div className="p-6 md:p-8 max-w-6xl">
-      {/* En-tête style Onboarding : titre + sous-titre + boutons */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-noir">
-            Entretiens individuels
-          </h1>
-          <p className="text-gris-60 text-[14px] mt-1">
-            Suivez et pilotez les entretiens individuels de vos collaborateurs.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 shrink-0">
-          <a href="#">
-            <Button variant="secondary" size="regular">
-              Voir les templates
-            </Button>
-          </a>
-          <Link href="/entretiens/nouveau">
-            <Button variant="primary" size="regular" iconLeft={<PlusIcon />}>
-              Nouvel entretien
-            </Button>
-          </Link>
-        </div>
+      {/* En-tête */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-noir">
+          Entretiens individuels
+        </h1>
+        <p className="text-gris-60 text-[14px] mt-1">
+          Suivez et pilotez les entretiens individuels de vos collaborateurs.
+        </p>
       </div>
 
       {/* Indicateurs synthétiques */}
@@ -92,13 +76,5 @@ export default function EntretiensPage() {
 
       <EntretiensList entretiens={entretiens} />
     </div>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-    </svg>
   );
 }

@@ -3,7 +3,7 @@ import type { TypeEntretien } from "@/lib/types";
 const labels: Record<TypeEntretien, string> = {
   integration: "Intégration",
   suivi: "Suivi",
-  bilan: "Bilan",
+  bilan: "Bilan annuel",
   autre: "Autre",
 };
 
