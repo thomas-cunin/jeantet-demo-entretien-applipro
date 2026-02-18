@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getEntretienById } from "@/lib/data";
 import { Button } from "@/components/ui/Button";
 import { TypeBadge } from "@/components/entretiens/TypeBadge";
-import { EntretienSimulationActions } from "@/components/entretiens/EntretienSimulationActions";
+import { StatutBadge } from "@/components/entretiens/StatutBadge";
 
 function formatDate(s: string) {
   return new Date(s).toLocaleDateString("fr-FR", {
@@ -40,8 +40,8 @@ export default function EntretienDetailPage({
           <div className="flex flex-col gap-2 mt-2">
             <div className="flex flex-wrap gap-2">
               <TypeBadge type={entretien.type} />
+              <StatutBadge statut={entretien.statut} />
             </div>
-            <EntretienSimulationActions entretien={entretien} />
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">

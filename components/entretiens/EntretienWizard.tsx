@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { EntretienWithDetails } from "@/lib/types";
 import {
   type WizardEntretienData,
@@ -97,10 +98,7 @@ export function EntretienWizard({ entretien, wizard }: EntretienWizardProps) {
 
         <section>
           {currentStep.key === "pre_collaborateur" && (
-            <PreCollaborateurView
-              wizard={wizardState}
-              onChange={updateWizard}
-            />
+            <PreCollaborateurView wizard={wizardState} />
           )}
           {currentStep.key === "pre_manager" && (
             <PreManagerView wizard={wizardState} />
@@ -108,6 +106,7 @@ export function EntretienWizard({ entretien, wizard }: EntretienWizardProps) {
           {currentStep.key === "session" && (
             <SessionView
               wizard={wizardState}
+              entretienId={entretien.id}
               onChangeWizard={updateWizard}
             />
           )}
@@ -216,111 +215,133 @@ function StepHeader({ currentIndex }: { currentIndex: number }) {
   );
 }
 
+// Helper constants for display
+const SMILEY_BY_SCORE: Record<number, { emoji: string; label: string }> = {
+  1: { emoji: "😞", label: "Très insatisfait" },
+  2: { emoji: "😕", label: "Insatisfait" },
+  3: { emoji: "😐", label: "Neutre" },
+  4: { emoji: "🙂", label: "Satisfait" },
+  5: { emoji: "😊", label: "Très satisfait" },
+};
+
+// Composant pour afficher les étoiles en lecture seule
+function StarsDisplay({ score, max = 5 }: { score: number; max?: number }) {
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: max }, (_, i) => i + 1).map((star) => (
+        <svg
+          key={star}
+          className={`w-5 h-5 ${star <= score ? "text-statut-orange" : "text-gris-20"}`}
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ))}
+      {score > 0 && SMILEY_BY_SCORE[score] && (
+        <span className="ml-2 text-xl">{SMILEY_BY_SCORE[score].emoji}</span>
+      )}
+    </div>
+  );
+}
+
+// Composant pour afficher un smiley sélectionné
+function SmileyDisplay({ score }: { score: number }) {
+  const smiley = SMILEY_BY_SCORE[score];
+  if (!smiley) return null;
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-3xl">{smiley.emoji}</span>
+      <span className="text-[14px] font-medium text-applipro-dark">{smiley.label}</span>
+    </div>
+  );
+}
+
+// Composant pour afficher tous les smileys avec un sélectionné
+function SmileyScaleDisplay({ score }: { score: number }) {
+  return (
+    <div className="flex justify-between gap-1">
+      {[1, 2, 3, 4, 5].map((v) => {
+        const smiley = SMILEY_BY_SCORE[v];
+        const isSelected = score === v;
+        return (
+          <div
+            key={v}
+            className={`flex-1 min-w-0 flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all ${
+              isSelected
+                ? "border-applipro bg-applipro-05 shadow-sm"
+                : "border-gris-10 bg-white opacity-50"
+            }`}
+          >
+            <span className="text-2xl leading-none">{smiley.emoji}</span>
+            <span className={`text-[11px] text-center leading-tight ${isSelected ? "text-applipro-dark font-medium" : "text-gris-60"}`}>
+              {v}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// En-tête de section numérotée
+function SectionHeader({ number, title }: { number: number; title: string }) {
+  return (
+    <h3 className="text-base font-semibold text-noir flex items-center gap-2 mb-3">
+      <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
+        {number}
+      </span>
+      {title}
+    </h3>
+  );
+}
+
 function PreCollaborateurView({
   wizard,
-  onChange,
 }: {
   wizard: WizardEntretienData;
-  onChange: (updater: (prev: WizardEntretienData) => WizardEntretienData) => void;
 }) {
   const { preCollaborateur } = wizard;
 
-  const isEmptyPre =
-    preCollaborateur.evaluations.length === 0 &&
-    preCollaborateur.objectifsNMoins1.length === 0 &&
-    preCollaborateur.besoinsFormation.length === 0 &&
-    preCollaborateur.competences.length === 0;
-
-  const handleSimulate = () => {
-    if (!isEmptyPre) return;
-    onChange((prev) => ({
-      ...prev,
-      preCollaborateur: {
-        ressentiGeneral:
-          "Globalement satisfait(e) de mon poste, quelques points d'amélioration identifiés sur la charge de travail et la formation.",
-        evaluations: [
-          {
-            theme: "Bien-être au travail",
-            score: 4,
-            commentaireCollaborateur:
-              "Bonne ambiance, relations fluides avec l'équipe et le manager.",
-          },
-          {
-            theme: "Charge de travail",
-            score: 3,
-            commentaireCollaborateur:
-              "Périodes de surcharge ponctuelles mais support de l'équipe.",
-          },
-        ],
-        objectifsNMoins1: [
-          {
-            intitule: "Approfondir la maîtrise des outils internes",
-            echeance: "2025-12-31",
-            avancementCollaborateur: 75,
-            commentaireCollaborateur:
-              "Je me sens plus autonome qu'en début d'année.",
-          },
-        ],
-        besoinsFormation: [
-          {
-            intitule: "Formation avancée sur l'outil métier",
-            origine: "collaborateur",
-          },
-        ],
-        competences: [
-          {
-            competence: "Organisation et priorisation",
-            niveauAttendu: 4,
-            niveauCollaborateur: 3,
-          },
-        ],
-      },
-    }));
-  };
-
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-applipro bg-gris-05 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 className="text-[14px] font-semibold text-noir mb-2">
-            Ressenti général du collaborateur
-          </h3>
-          <p className="text-[14px] text-gris-80">
-            {preCollaborateur.ressentiGeneral}
-          </p>
-        </div>
-        <Button
-          type="button"
-          size="small"
-          variant="secondary"
-          className="mt-2 sm:mt-0 shrink-0"
-          onClick={handleSimulate}
-          disabled={!isEmptyPre}
-        >
-          Simuler pré‑entretien collaborateur
-        </Button>
-      </div>
+      {/* Section 1 - Ressenti général */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={1} title="Ressenti général" />
+        <p className="text-[14px] text-gris-80 leading-relaxed">
+          {preCollaborateur.ressentiGeneral || <span className="italic text-gris-40">Non renseigné</span>}
+        </p>
+      </section>
 
+      {/* Section 2 - Niveau de satisfaction (smiley) */}
+      <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+        <SectionHeader number={2} title="Niveau de satisfaction" />
+        <p className="text-[13px] text-gris-60 mb-3">
+          Niveau de satisfaction global du collaborateur
+        </p>
+        <SmileyScaleDisplay score={preCollaborateur.sentimentGlobal} />
+      </section>
+
+      {/* Section 3 - Évaluation par thème (étoiles) */}
       {preCollaborateur.evaluations.length > 0 && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Évaluation qualitative
-          </h3>
-          <div className="grid sm:grid-cols-3 gap-3">
-            {preCollaborateur.evaluations.map((item) => (
+        <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+          <SectionHeader number={3} title="Évaluation par thème" />
+          <p className="text-[13px] text-gris-60 mb-4">
+            Notes de 1 à 5 étoiles pour chaque critère
+          </p>
+          <div className="space-y-4">
+            {preCollaborateur.evaluations.map((item, index) => (
               <div
-                key={item.theme}
-                className="border border-gris-10 rounded-applipro p-3 bg-blanc"
+                key={`${item.theme}-${index}`}
+                className="p-3 rounded-xl bg-white border border-gris-10"
               >
-                <p className="text-[13px] font-medium text-noir">
-                  {item.theme}
-                </p>
-                <p className="mt-1 text-[24px] font-semibold text-applipro">
-                  {item.score}/5
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
+                  <span className="text-[14px] font-medium text-noir">{item.theme}</span>
+                  <StarsDisplay score={item.score} />
+                </div>
                 {item.commentaireCollaborateur && (
-                  <p className="mt-1 text-[13px] text-gris-60">
-                    {item.commentaireCollaborateur}
+                  <p className="text-[13px] text-gris-60 mt-2 italic">
+                    &quot;{item.commentaireCollaborateur}&quot;
                   </p>
                 )}
               </div>
@@ -329,31 +350,65 @@ function PreCollaborateurView({
         </section>
       )}
 
-      {preCollaborateur.objectifsNMoins1.length > 0 && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Objectifs N-1 et avancement
-          </h3>
+      {/* Section 4 - Ressenti par thème (smileys) */}
+      {preCollaborateur.ressentiParTheme && preCollaborateur.ressentiParTheme.length > 0 && (
+        <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+          <SectionHeader number={4} title="Ressenti par thème" />
+          <p className="text-[13px] text-gris-60 mb-4">
+            Ressenti du collaborateur pour chaque thème
+          </p>
           <div className="space-y-3">
+            {preCollaborateur.ressentiParTheme.map((item, index) => (
+              <div
+                key={`${item.theme}-${index}`}
+                className="p-3 rounded-xl bg-white border border-gris-10 flex items-center justify-between gap-3"
+              >
+                <span className="text-[14px] font-medium text-noir">{item.theme}</span>
+                <SmileyDisplay score={item.score} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Section 5 - Objectifs de l'année passée */}
+      {preCollaborateur.objectifsNMoins1.length > 0 && (
+        <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+          <SectionHeader number={5} title="Objectifs de l'année passée" />
+          <p className="text-[13px] text-gris-60 mb-4">
+            Avancement déclaré par le collaborateur sur les objectifs fixés
+          </p>
+          <div className="space-y-4">
             {preCollaborateur.objectifsNMoins1.map((obj, index) => (
               <div
                 key={`${obj.intitule}-${index}`}
-                className="border border-gris-10 rounded-applipro p-3"
+                className="p-4 rounded-xl bg-white border border-gris-10 space-y-3"
               >
-                <p className="text-[14px] font-medium text-noir">
-                  {obj.intitule}
-                </p>
-                <div className="mt-1 flex flex-wrap items-center gap-3 text-[13px] text-gris-60">
+                <div>
+                  <p className="text-[15px] font-medium text-noir">{obj.intitule}</p>
                   {obj.echeance && (
-                    <span>Échéance : {formatDate(obj.echeance)}</span>
-                  )}
-                  {typeof obj.avancementCollaborateur === "number" && (
-                    <span>Avancement déclaré : {obj.avancementCollaborateur}%</span>
+                    <p className="text-[13px] text-gris-60 mt-0.5">
+                      Échéance : {obj.echeance}
+                    </p>
                   )}
                 </div>
+                {typeof obj.avancementCollaborateur === "number" && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-[14px] text-gris-80 shrink-0">Avancement</span>
+                    <div className="flex-1 h-3 bg-gris-20 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-applipro rounded-full transition-all"
+                        style={{ width: `${obj.avancementCollaborateur}%` }}
+                      />
+                    </div>
+                    <span className="text-[14px] font-semibold text-applipro w-12 text-right">
+                      {obj.avancementCollaborateur}%
+                    </span>
+                  </div>
+                )}
                 {obj.commentaireCollaborateur && (
-                  <p className="mt-1 text-[13px] text-gris-60">
-                    {obj.commentaireCollaborateur}
+                  <p className="text-[13px] text-gris-60 italic">
+                    &quot;{obj.commentaireCollaborateur}&quot;
                   </p>
                 )}
               </div>
@@ -362,22 +417,24 @@ function PreCollaborateurView({
         </section>
       )}
 
+      {/* Section 6 - Besoins en formation */}
       {preCollaborateur.besoinsFormation.length > 0 && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Besoins en formation exprimés
-          </h3>
-          <ul className="space-y-2 text-[14px] text-noir">
+        <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+          <SectionHeader number={6} title="Besoins en formation" />
+          <p className="text-[13px] text-gris-60 mb-3">
+            Souhaits de formation exprimés par le collaborateur
+          </p>
+          <ul className="space-y-2">
             {preCollaborateur.besoinsFormation.map((b, index) => (
               <li
                 key={`${b.intitule}-${index}`}
-                className="flex items-start gap-2"
+                className="flex items-start gap-3 p-3 rounded-xl bg-white border border-gris-10"
               >
-                <span className="mt-[3px] h-1.5 w-1.5 rounded-full bg-applipro shrink-0" />
+                <span className="mt-1 h-2 w-2 rounded-full bg-applipro shrink-0" />
                 <div>
-                  <span>{b.intitule}</span>
+                  <span className="text-[14px] font-medium text-noir">{b.intitule}</span>
                   {b.commentaire && (
-                    <p className="text-[13px] text-gris-60">{b.commentaire}</p>
+                    <p className="text-[13px] text-gris-60 mt-1">{b.commentaire}</p>
                   )}
                 </div>
               </li>
@@ -386,27 +443,35 @@ function PreCollaborateurView({
         </section>
       )}
 
+      {/* Section 7 - Auto-évaluation des compétences */}
       {preCollaborateur.competences.length > 0 && (
-        <section>
-          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-            Auto-évaluation des compétences
-          </h3>
-          <div className="space-y-2">
+        <section className="bg-gris-05 rounded-xl p-4 border border-gris-10">
+          <SectionHeader number={7} title="Auto-évaluation des compétences" />
+          <p className="text-[13px] text-gris-60 mb-4">
+            Niveau actuel évalué par le collaborateur vs niveau attendu
+          </p>
+          <div className="space-y-3">
             {preCollaborateur.competences.map((c, index) => (
               <div
                 key={`${c.competence}-${index}`}
-                className="border border-gris-10 rounded-applipro p-3 flex flex-col gap-1"
+                className="p-3 rounded-xl bg-white border border-gris-10"
               >
-                <p className="text-[14px] font-medium text-noir">
-                  {c.competence}
-                </p>
-                <p className="text-[13px] text-gris-60">
-                  Niveau attendu : {c.niveauAttendu}/5 — Déclaré :
-                  {" "}
-                  {c.niveauCollaborateur}/5
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <span className="text-[14px] font-medium text-noir">{c.competence}</span>
+                  <StarsDisplay score={c.niveauCollaborateur} />
+                </div>
+                <div className="mt-2 flex items-center gap-4 text-[13px]">
+                  <span className="text-gris-60">
+                    Niveau attendu : <strong className="text-noir">{c.niveauAttendu}/5</strong>
+                  </span>
+                  <span className="text-gris-60">
+                    Auto-évaluation : <strong className="text-applipro">{c.niveauCollaborateur}/5</strong>
+                  </span>
+                </div>
                 {c.commentaire && (
-                  <p className="text-[13px] text-gris-60">{c.commentaire}</p>
+                  <p className="text-[13px] text-gris-60 mt-2 italic">
+                    &quot;{c.commentaire}&quot;
+                  </p>
                 )}
               </div>
             ))}
@@ -431,49 +496,145 @@ function PreManagerView({ wizard }: { wizard: WizardEntretienData }) {
         </p>
       </div>
 
+      {/* Évaluations manager */}
+      {preManager.evaluationsManager && preManager.evaluationsManager.length > 0 && (
+        <section>
+          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+            Évaluations du manager
+          </h3>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {preManager.evaluationsManager.map((ev) => (
+              <div
+                key={ev.theme}
+                className="border border-gris-10 rounded-applipro p-3 bg-blanc"
+              >
+                <p className="text-[13px] font-medium text-noir">
+                  {ev.theme}
+                </p>
+                <div className="mt-1 flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                      key={star}
+                      className={`w-4 h-4 ${star <= ev.score ? "text-statut-orange" : "text-gris-20"}`}
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+                {ev.commentaire && (
+                  <p className="mt-1 text-[13px] text-gris-60">
+                    {ev.commentaire}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="border border-gris-10 rounded-applipro p-3">
           <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
             Points forts identifiés
           </h3>
-          <ul className="space-y-1 text-[14px] text-noir">
-            {preManager.pointsForts.map((p) => (
-              <li key={p} className="flex items-start gap-2">
-                <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-vert shrink-0" />
-                <span>{p}</span>
-              </li>
-            ))}
-          </ul>
+          {preManager.pointsForts.length > 0 ? (
+            <ul className="space-y-1 text-[14px] text-noir">
+              {preManager.pointsForts.map((p, i) => (
+                <li key={`${p}-${i}`} className="flex items-start gap-2">
+                  <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-vert shrink-0" />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-[13px] text-gris-40 italic">Non renseigné</p>
+          )}
         </div>
         <div className="border border-gris-10 rounded-applipro p-3">
           <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
             Axes de progrès
           </h3>
-          <ul className="space-y-1 text-[14px] text-noir">
-            {preManager.axesProgres.map((a) => (
-              <li key={a} className="flex items-start gap-2">
-                <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-orange shrink-0" />
-                <span>{a}</span>
-              </li>
-            ))}
-          </ul>
+          {preManager.axesProgres.length > 0 ? (
+            <ul className="space-y-1 text-[14px] text-noir">
+              {preManager.axesProgres.map((a, i) => (
+                <li key={`${a}-${i}`} className="flex items-start gap-2">
+                  <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-statut-orange shrink-0" />
+                  <span>{a}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-[13px] text-gris-40 italic">Non renseigné</p>
+          )}
         </div>
       </div>
+
+      {/* Besoins formation identifiés */}
+      {preManager.besoinsFormationManager && (
+        <section>
+          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+            Besoins en formation identifiés
+          </h3>
+          <div className="p-3 border border-gris-10 rounded-applipro bg-gris-05">
+            <p className="text-[14px] text-gris-80">
+              {preManager.besoinsFormationManager}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Notes préparatoires */}
+      {preManager.notesPreparatoires && (
+        <section>
+          <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+            Notes préparatoires
+          </h3>
+          <div className="p-3 border border-gris-10 rounded-applipro bg-gris-05">
+            <p className="text-[14px] text-gris-80 italic">
+              {preManager.notesPreparatoires}
+            </p>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
 
 function SessionView({
   wizard,
+  entretienId,
   onChangeWizard,
 }: {
   wizard: WizardEntretienData;
+  entretienId: string;
   onChangeWizard: (updater: (prev: WizardEntretienData) => WizardEntretienData) => void;
 }) {
-  const { preCollaborateur, session } = wizard;
+  const { preCollaborateur, preManager, session } = wizard;
+  const { bilan } = session;
 
   return (
     <div className="space-y-6">
+      {/* Bouton accès Vue Entretien */}
+      <div className="p-4 rounded-applipro bg-applipro-05 border border-applipro-20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h3 className="text-[14px] font-semibold text-applipro-dark">
+            Vue Entretien complète
+          </h3>
+          <p className="text-[13px] text-gris-60 mt-1">
+            Accédez à la vue détaillée pour consulter les deux préparations côte à côte,
+            prendre des notes et ajouter des remarques sur chaque champ.
+          </p>
+        </div>
+        <Link href={`/entretiens/${entretienId}/vue`}>
+          <Button type="button" variant="primary" size="small">
+            Ouvrir la Vue Entretien
+          </Button>
+        </Link>
+      </div>
+
+      {/* Vue comparative */}
       <section>
         <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
           Vue comparative collaborateur / manager
@@ -481,43 +642,57 @@ function SessionView({
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="border border-gris-10 rounded-applipro p-3 bg-gris-05">
             <h4 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-              Préparation collaborateur
+              Ressenti collaborateur
             </h4>
             <p className="text-[14px] text-gris-80">
-              {preCollaborateur.ressentiGeneral}
+              {preCollaborateur.ressentiGeneral || <span className="italic text-gris-40">Non renseigné</span>}
             </p>
           </div>
-          <div className="border border-gris-10 rounded-applipro p-3 bg-blanc">
+          <div className="border border-gris-10 rounded-applipro p-3 bg-gris-05">
             <h4 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
-              Notes manager en séance
+              Synthèse manager
             </h4>
-            <Textarea
-              label=""
-              aria-label="Notes manager pendant la séance"
-              value={session.notesSeance}
-              onChange={(e) =>
-                onChangeWizard((prev) => ({
-                  ...prev,
-                  session: {
-                    ...prev.session,
-                    notesSeance: e.target.value,
-                  },
-                }))
-              }
-              rows={5}
-              className="mt-0"
-            />
+            <p className="text-[14px] text-gris-80">
+              {preManager.syntheseManager || <span className="italic text-gris-40">Non renseigné</span>}
+            </p>
           </div>
         </div>
       </section>
 
+      {/* Notes de séance */}
+      <section>
+        <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+          Notes de séance
+        </h3>
+        <div className="border border-gris-10 rounded-applipro p-3 bg-blanc">
+          <Textarea
+            label=""
+            aria-label="Notes manager pendant la séance"
+            value={session.notesSeance}
+            onChange={(e) =>
+              onChangeWizard((prev) => ({
+                ...prev,
+                session: {
+                  ...prev.session,
+                  notesSeance: e.target.value,
+                },
+              }))
+            }
+            rows={4}
+            placeholder="Notez les points clés abordés pendant l'entretien..."
+            className="mt-0"
+          />
+        </div>
+      </section>
+
+      {/* Nouveaux objectifs N+1 */}
       <section>
         <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
           Nouveaux objectifs (N+1)
         </h3>
         {session.objectifsNPlus1.length === 0 ? (
-          <p className="text-[14px] text-gris-60">
-            Aucun objectif défini pour le moment (simulation).
+          <p className="text-[14px] text-gris-40 italic p-3 bg-gris-05 rounded-applipro border border-gris-10">
+            Aucun objectif défini. Utilisez la Vue Entretien pour définir les objectifs.
           </p>
         ) : (
           <div className="space-y-3">
@@ -545,32 +720,97 @@ function SessionView({
         )}
       </section>
 
+      {/* Décisions formation */}
       <section>
         <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
           Décisions formation prises en séance
         </h3>
         {session.decisionsFormation.length === 0 ? (
-          <p className="text-[14px] text-gris-60">
-            Aucun besoin formation saisi pour le moment (simulation).
+          <p className="text-[14px] text-gris-40 italic p-3 bg-gris-05 rounded-applipro border border-gris-10">
+            Aucune décision formation. Utilisez la Vue Entretien pour les définir.
           </p>
         ) : (
           <ul className="space-y-2 text-[14px] text-noir">
             {session.decisionsFormation.map((b, index) => (
               <li
                 key={`${b.intitule}-${index}`}
-                className="flex items-start gap-2"
+                className="flex items-start gap-2 border border-gris-10 rounded-applipro p-3"
               >
                 <span className="mt-[3px] h-1.5 w-1.5 rounded-full bg-statut-vert shrink-0" />
                 <div>
-                  <span>{b.intitule}</span>
+                  <span className="font-medium">{b.intitule}</span>
                   <p className="text-[13px] text-gris-60">
                     Origine : {b.origine === "manager" ? "Manager" : "Collaborateur"}
                   </p>
+                  {b.commentaire && (
+                    <p className="text-[13px] text-gris-60 mt-1">{b.commentaire}</p>
+                  )}
                 </div>
               </li>
             ))}
           </ul>
         )}
+      </section>
+
+      {/* Bilan de l'entretien */}
+      <section>
+        <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+          Bilan de l&apos;entretien
+        </h3>
+        <div className="space-y-4">
+          {/* Synthèse globale */}
+          {bilan.syntheseGlobale ? (
+            <div className="p-3 border border-gris-10 rounded-applipro bg-gris-05">
+              <h4 className="text-[13px] font-medium text-noir mb-1">Synthèse globale</h4>
+              <p className="text-[14px] text-gris-80">{bilan.syntheseGlobale}</p>
+            </div>
+          ) : (
+            <p className="text-[14px] text-gris-40 italic p-3 bg-gris-05 rounded-applipro border border-gris-10">
+              Synthèse globale non renseignée. Utilisez la Vue Entretien pour la compléter.
+            </p>
+          )}
+
+          {/* Points à améliorer */}
+          {bilan.pointsAmeliorer && bilan.pointsAmeliorer.length > 0 && (
+            <div className="p-3 border border-gris-10 rounded-applipro">
+              <h4 className="text-[13px] font-medium text-noir mb-2">Points à améliorer</h4>
+              <div className="space-y-2">
+                {bilan.pointsAmeliorer.map((point, i) => (
+                  <div key={i} className="flex items-start gap-2 p-2 bg-statut-orange/5 rounded-md border border-statut-orange/20">
+                    <span className="mt-[3px] h-1.5 w-1.5 rounded-full bg-statut-orange shrink-0" />
+                    <div className="flex-1">
+                      <span className="text-[14px] font-medium text-noir">{point.intitule}</span>
+                      {point.echeance && (
+                        <span className="text-[13px] text-gris-60 ml-2">
+                          (Échéance : {formatDate(point.echeance)})
+                        </span>
+                      )}
+                      {point.remarque && (
+                        <p className="text-[13px] text-gris-60 mt-1">{point.remarque}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Remarques collaborateur / manager */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="p-3 border border-gris-10 rounded-applipro">
+              <h4 className="text-[13px] font-medium text-noir mb-1">Remarques collaborateur</h4>
+              <p className="text-[14px] text-gris-80">
+                {bilan.remarquesCollaborateur || <span className="italic text-gris-40">Non renseigné</span>}
+              </p>
+            </div>
+            <div className="p-3 border border-gris-10 rounded-applipro">
+              <h4 className="text-[13px] font-medium text-noir mb-1">Remarques manager</h4>
+              <p className="text-[14px] text-gris-80">
+                {bilan.remarquesManager || <span className="italic text-gris-40">Non renseigné</span>}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );
@@ -681,48 +921,6 @@ function ValidationView({
         )}
         {renderStatut(validation.statutValidationManager, "Manager")}
       </section>
-
-      <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          size="small"
-          variant="secondary"
-          onClick={() =>
-            onChangeWizard((prev) => ({
-              ...prev,
-              validation: {
-                ...prev.validation,
-                statutSignatureCollaborateur: "valide",
-                remarquesCollaborateur:
-                  prev.validation.remarquesCollaborateur &&
-                  !prev.validation.remarquesCollaborateur.startsWith(
-                    "Aucune remarque",
-                  )
-                    ? prev.validation.remarquesCollaborateur
-                    : "Je confirme que le compte-rendu reflète bien nos échanges.",
-              },
-            }))
-          }
-        >
-          Simuler validation collaborateur
-        </Button>
-        <Button
-          type="button"
-          size="small"
-          variant="secondary"
-          onClick={() =>
-            onChangeWizard((prev) => ({
-              ...prev,
-              validation: {
-                ...prev.validation,
-                statutValidationManager: "valide",
-              },
-            }))
-          }
-        >
-          Simuler validation manager
-        </Button>
-      </div>
 
       {/* Remarques sur les champs (issues de la Vue Entretien) */}
       {remarquesEntries.length > 0 && (

@@ -34,9 +34,16 @@ export interface WizardCompetenceItem {
   commentaire?: string;
 }
 
+export interface WizardRessentiTheme {
+  theme: string;
+  score: 1 | 2 | 3 | 4 | 5;
+}
+
 export interface WizardPreEntretienCollaborateur {
   ressentiGeneral: string;
+  sentimentGlobal: 1 | 2 | 3 | 4 | 5;
   evaluations: WizardEvaluationItem[];
+  ressentiParTheme: WizardRessentiTheme[];
   objectifsNMoins1: WizardObjectifItem[];
   besoinsFormation: WizardBesoinFormation[];
   competences: WizardCompetenceItem[];
@@ -114,6 +121,8 @@ const WIZARD_DATA: WizardEntretienData[] = [
     preCollaborateur: {
       ressentiGeneral:
         "Cette année a été riche en apprentissages. Je me sens bien intégrée dans l'équipe et j'apprécie l'ambiance de travail. J'ai pu monter en compétences sur plusieurs projets techniques. Quelques périodes de charge intense mais globalement un bon équilibre.",
+      // Section 2 - Sentiment global (smiley)
+      sentimentGlobal: 4,
       // Thèmes du formulaire collaborateur (section 3 - Évaluation par thème)
       evaluations: [
         {
@@ -140,6 +149,12 @@ const WIZARD_DATA: WizardEntretienData[] = [
           commentaireCollaborateur:
             "Quelques périodes de rush avec des heures supplémentaires, mais globalement acceptable.",
         },
+      ],
+      // Section 4 - Ressenti par thème (smileys)
+      ressentiParTheme: [
+        { theme: "Ambiance d'équipe", score: 5 },
+        { theme: "Équilibre vie pro/perso", score: 3 },
+        { theme: "Reconnaissance", score: 4 },
       ],
       // Objectifs N-1 du formulaire collaborateur (section 5)
       objectifsNMoins1: [
@@ -324,6 +339,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
     preCollaborateur: {
       ressentiGeneral:
         "Une année chargée avec beaucoup de projets en parallèle. Je suis globalement satisfait de mes réalisations mais j'ai ressenti une certaine fatigue en fin d'année. J'aimerais mieux prioriser mes missions l'année prochaine.",
+      sentimentGlobal: 3,
       evaluations: [
         {
           theme: "Résultats et qualité du travail",
@@ -349,6 +365,11 @@ const WIZARD_DATA: WizardEntretienData[] = [
           commentaireCollaborateur:
             "Beaucoup d'heures supplémentaires, difficile de déconnecter. Point d'attention pour l'année prochaine.",
         },
+      ],
+      ressentiParTheme: [
+        { theme: "Ambiance d'équipe", score: 4 },
+        { theme: "Équilibre vie pro/perso", score: 2 },
+        { theme: "Reconnaissance", score: 3 },
       ],
       objectifsNMoins1: [
         {
@@ -521,7 +542,9 @@ export function getWizardDataForEntretien(
     preCollaborateur: {
       ressentiGeneral:
         "Préparation non saisie côté collaborateur (données simulées).",
+      sentimentGlobal: 3,
       evaluations: [],
+      ressentiParTheme: [],
       objectifsNMoins1: [],
       besoinsFormation: [],
       competences: [],
