@@ -67,7 +67,7 @@ export function TopbarNouveautes() {
 
   return (
     <>
-      <div className="w-full bg-gradient-to-r from-applipro-dark to-applipro px-4 py-2.5 flex items-center justify-between gap-3 shadow-sm">
+      <div className="hidden w-full bg-gradient-to-r from-applipro-dark to-applipro px-4 py-2.5 flex items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-2 text-[13px] text-white">
           <span className="inline-flex items-center justify-center h-5 w-8 rounded-full bg-white/10 border border-white/30 text-[11px] font-semibold tracking-wide">
             V1
