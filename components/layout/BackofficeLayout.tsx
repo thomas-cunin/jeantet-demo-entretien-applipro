@@ -4,18 +4,51 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { TopbarNouveautes } from "./TopbarNouveautes";
 
 // Vider le localStorage à chaque visite pour toujours afficher les données fraîches
 const STORAGE_KEYS_TO_CLEAR = [
   "demo-entretiens-wizard-v1",
   "demo-entretiens-with-details-v1",
+  "demo-entretiens-with-details-v2",
 ];
 
 const nav = [
-  { href: "/preparation-collaborateur", label: "Formulaire collaborateur" },
-  { href: "/preparation-manager", label: "Formulaire manager" },
-  { href: "/entretiens", label: "Tableau de bord" },
-  { href: "/entretiens/ent-1/vue", label: "Vue Entretien (Sophie)" },
+  {
+    href: "/entretiens",
+    label: "Tableau de bord",
+    tourId: "lien-tableau-de-bord",
+  },
+  {
+    href: "/tableau-rh",
+    label: "Tableau de bord RH",
+    tourId: "lien-tableau-rh",
+  },
+  {
+    href: "/preparation-collaborateur",
+    label: "Formulaire collaborateur",
+    tourId: "lien-preparation-collaborateur",
+  },
+  {
+    href: "/preparation-manager",
+    label: "Formulaire manager",
+    tourId: "lien-preparation-manager",
+  },
+  {
+    href: "/entretiens/ent-1/vue",
+    label: "Vue Entretien (Sophie)",
+    tourId: "lien-vue-entretien",
+  },
+  {
+    href: "/templates",
+    label: "Templates d'entretien",
+    tourId: "lien-templates",
+  },
+  {
+    href: "/campagnes/nouvelle",
+    label: "Créer une campagne",
+    tourId: "lien-creer-campagne",
+  },
 ];
 
 function NavLinks({
@@ -44,6 +77,7 @@ function NavLinks({
               px-3 py-2 rounded-applipro text-[14px] font-medium transition-colors block
               ${isActive ? "bg-applipro text-white" : "text-applipro-20 hover:bg-white/10 hover:text-white"}
             `}
+            data-tour-id={item.tourId}
           >
             {item.label}
           </Link>
@@ -152,8 +186,11 @@ export function BackofficeLayout({
         </nav>
       </aside>
 
-      <main className="flex-1 overflow-auto pt-[4.5rem] px-4 md:pt-0 md:px-0">
-        {children}
+      <main className="flex-1 overflow-auto pt-[4.5rem] md:pt-0 flex flex-col">
+        <TopbarNouveautes />
+        <div className="flex-1 px-4 md:px-0" data-tour-id="tableau-de-bord">
+          {children}
+        </div>
       </main>
     </div>
   );

@@ -3,6 +3,8 @@ import type {
   Manager,
   Entretien,
   EntretienWithDetails,
+  Campagne,
+  TemplateEntretien,
   StatutEntretien,
   TypeEntretien,
 } from "./types";
@@ -10,10 +12,14 @@ import type {
 import collaborateursData from "@/data/collaborateurs.json";
 import managersData from "@/data/managers.json";
 import entretiensData from "@/data/entretiens.json";
+import campagnesData from "@/data/campagnes.json";
+import templatesData from "@/data/templates.json";
 
 const collaborateurs = collaborateursData as Collaborateur[];
 const managers = managersData as Manager[];
 const entretiens = entretiensData as Entretien[];
+const campagnes = campagnesData as Campagne[];
+const templates = templatesData as TemplateEntretien[];
 
 export const STATUTS: { value: StatutEntretien; label: string }[] = [
   { value: "planifie", label: "Planifié" },
@@ -62,4 +68,16 @@ export function getCollaborateurById(id: string): Collaborateur | null {
 
 export function getManagerById(id: string): Manager | null {
   return managers.find((m) => m.id === id) ?? null;
+}
+
+export function getCampagnes(): Campagne[] {
+  return campagnes;
+}
+
+export function getCampagneById(id: string): Campagne | null {
+  return campagnes.find((c) => c.id === id) ?? null;
+}
+
+export function getTemplates(): TemplateEntretien[] {
+  return templates;
 }

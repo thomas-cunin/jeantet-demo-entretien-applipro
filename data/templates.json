@@ -1,0 +1,24 @@
+[
+  {
+    "id": "tpl-annuel-2026",
+    "nom": "Entretien annuel standard",
+    "description": "Trame standard pour les entretiens annuels avec critères spécifiques par groupe",
+    "type": "bilan",
+    "elements": [
+      { "id": "tpl-el-1", "type": "evaluation", "label": "Sécurité routière", "obligatoire": true, "appliquePour": ["conducteur"], "destinataire": "tous" },
+      { "id": "tpl-el-2", "type": "evaluation", "label": "Ponctualité livraisons", "obligatoire": true, "appliquePour": ["conducteur"], "destinataire": "tous" },
+      { "id": "tpl-el-3", "type": "evaluation", "label": "Entretien véhicule", "obligatoire": true, "appliquePour": ["conducteur"], "destinataire": "tous" },
+      { "id": "tpl-el-4", "type": "evaluation", "label": "Écoconduite", "obligatoire": false, "appliquePour": ["conducteur"], "destinataire": "manager" },
+      { "id": "tpl-el-5", "type": "evaluation", "label": "Qualité du travail", "obligatoire": true, "appliquePour": ["sedentaire"], "destinataire": "tous" },
+      { "id": "tpl-el-6", "type": "evaluation", "label": "Respect des délais", "obligatoire": true, "appliquePour": ["sedentaire"], "destinataire": "tous" },
+      { "id": "tpl-el-7", "type": "evaluation", "label": "Autonomie", "obligatoire": true, "appliquePour": ["sedentaire"], "destinataire": "tous" },
+      { "id": "tpl-el-8", "type": "evaluation", "label": "Esprit d'équipe", "obligatoire": true, "appliquePour": ["sedentaire"], "destinataire": "tous" },
+      { "id": "tpl-el-9", "type": "competence", "label": "Compétences métier", "obligatoire": true, "appliquePour": "tous", "destinataire": "collaborateur" },
+      { "id": "tpl-el-10", "type": "objectif", "label": "Objectifs annuels", "obligatoire": true, "appliquePour": "tous", "destinataire": "tous" },
+      { "id": "tpl-el-11", "type": "formation", "label": "Besoins en formation", "obligatoire": false, "appliquePour": "tous", "destinataire": "tous" },
+      { "id": "tpl-el-12", "type": "texte_libre", "label": "Commentaires libres", "obligatoire": false, "appliquePour": "tous", "destinataire": "tous" }
+    ],
+    "createdAt": "2025-12-01T09:00:00Z",
+    "updatedAt": "2025-12-01T09:00:00Z"
+  }
+]

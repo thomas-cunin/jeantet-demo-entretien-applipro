@@ -87,6 +87,7 @@ function EntretienCard({
           <dt className="text-gris-60 text-[13px] mb-0.5">Date prévue</dt>
           <dd className={enRetard ? "text-statut-rouge font-medium" : "text-noir"}>
             {formatDate(e.datePrevue)}
+            {e.heurePrevue && <span className="text-gris-60 font-normal"> à {e.heurePrevue}</span>}
             {enRetard && (
               <span className="block text-[11px] font-normal">Date dépassée</span>
             )}
@@ -314,6 +315,7 @@ export function EntretiensList({ entretiens }: EntretiensListProps) {
                     <td className="px-4 py-3">
                       <span className={`text-[14px] ${enRetard ? "text-statut-rouge font-medium" : "text-gris-80"}`}>
                         {formatDate(e.datePrevue)}
+                        {e.heurePrevue && <span className="text-gris-60 font-normal"> à {e.heurePrevue}</span>}
                       </span>
                       {enRetard && (
                         <p className="text-[11px] text-statut-rouge mt-0.5">

@@ -6,6 +6,8 @@ import type { EntretienWithDetails } from "@/lib/types";
 import {
   type WizardEntretienData,
   type WizardStepKey,
+  type SignalRhCategorie,
+  SIGNAL_RH_CATEGORIES,
   loadWizardFromStorage,
   saveWizardToStorage,
 } from "@/lib/wizardData";
@@ -771,6 +773,111 @@ function SessionView({
         )}
       </section>
 
+      {/* Signal RH */}
+      <section>
+        <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+          Signal RH
+        </h3>
+        <p className="text-[13px] text-gris-60 mb-3">
+          Le manager peut signaler un point nécessitant l&apos;attention de la RH.
+          Ce marqueur apparaîtra dans le tableau de bord RH.
+        </p>
+        <div className="border border-gris-10 rounded-applipro p-4 space-y-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[14px] font-medium text-noir">
+              Signaux RH
+              {(session.signauxRh ?? []).length > 0 && (
+                <span className="ml-2 text-[12px] font-semibold px-2 py-0.5 rounded-full bg-statut-orange/10 text-statut-orange">
+                  {(session.signauxRh ?? []).length}
+                </span>
+              )}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                onChangeWizard((prev) => ({
+                  ...prev,
+                  session: {
+                    ...prev.session,
+                    signauxRh: [...(prev.session.signauxRh ?? []), { actif: true }],
+                  },
+                }))
+              }
+              className="text-[13px] font-medium text-statut-orange hover:text-statut-orange/80 flex items-center gap-1"
+            >
+              + Ajouter
+            </button>
+          </div>
+
+          {(session.signauxRh ?? []).length === 0 && (
+            <p className="text-[13px] text-gris-40 italic">Aucun signalement RH.</p>
+          )}
+
+          {(session.signauxRh ?? []).map((signal, idx) => (
+            <div key={idx} className="border-l-4 border-l-statut-orange border border-gris-10 rounded-lg p-3 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-noir">Signal {idx + 1}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChangeWizard((prev) => ({
+                      ...prev,
+                      session: {
+                        ...prev.session,
+                        signauxRh: (prev.session.signauxRh ?? []).filter((_, i) => i !== idx),
+                      },
+                    }))
+                  }
+                  className="text-gris-40 hover:text-statut-rouge transition-colors p-1"
+                  title="Supprimer"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div>
+                <label className="text-[13px] text-gris-60 block mb-1">Catégorie</label>
+                <select
+                  value={signal.categorie ?? ""}
+                  onChange={(e) =>
+                    onChangeWizard((prev) => {
+                      const updated = [...(prev.session.signauxRh ?? [])];
+                      updated[idx] = { ...updated[idx], categorie: e.target.value as SignalRhCategorie };
+                      return { ...prev, session: { ...prev.session, signauxRh: updated } };
+                    })
+                  }
+                  className="w-full px-3 py-2 rounded-applipro border border-gris-20 bg-white text-[14px] text-noir focus:outline-none focus:ring-2 focus:ring-applipro"
+                >
+                  <option value="">Sélectionner une catégorie</option>
+                  {SIGNAL_RH_CATEGORIES.map((cat) => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[13px] text-gris-60 block mb-1">Commentaire pour la RH</label>
+                <Textarea
+                  label=""
+                  aria-label={`Commentaire signal RH ${idx + 1}`}
+                  value={signal.commentaire ?? ""}
+                  onChange={(e) =>
+                    onChangeWizard((prev) => {
+                      const updated = [...(prev.session.signauxRh ?? [])];
+                      updated[idx] = { ...updated[idx], commentaire: e.target.value };
+                      return { ...prev, session: { ...prev.session, signauxRh: updated } };
+                    })
+                  }
+                  rows={3}
+                  placeholder="Décrivez le point à remonter à la RH..."
+                  className="mt-0"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Bilan de l'entretien */}
       <section>
         <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
@@ -905,18 +1012,54 @@ function ValidationView({
   const statutBadgeClasses =
     "inline-flex items-center px-2.5 py-0.5 rounded-applipro text-[13px] font-medium";
 
-  const renderStatut = (
-    statut: "en_attente" | "valide",
-    role: "Collaborateur" | "Manager",
-  ) => {
-    const isValide = statut === "valide";
+  const renderStatutCollaborateur = () => {
+    const statut = validation.statutSignatureCollaborateur;
+    let label = "En attente de validation";
+    let badge = "À signer";
+    let classes = "bg-gris-10 text-gris-80";
+
+    if (statut === "valide") {
+      label = "Validé par le collaborateur";
+      badge = "Signé";
+      classes = "bg-statut-vert-20 text-statut-vert";
+    } else if (statut === "refuse") {
+      label = "Refus de signer";
+      badge = "Refusé";
+      classes = "bg-statut-rouge-20 text-statut-rouge";
+    }
+
     return (
       <div className="flex items-center justify-between border border-gris-10 rounded-applipro px-3 py-2">
         <div>
-          <p className="text-[13px] text-gris-60">{role}</p>
+          <p className="text-[13px] text-gris-60">Collaborateur</p>
+          <p className="text-[14px] text-noir font-medium">{label}</p>
+          {validation.dateSignatureCollaborateur && (
+            <p className="text-[12px] text-gris-60 mt-0.5">
+              Signé le {formatDate(validation.dateSignatureCollaborateur)}
+            </p>
+          )}
+        </div>
+        <span className={`${statutBadgeClasses} ${classes}`}>{badge}</span>
+      </div>
+    );
+  };
+
+  const renderStatutManager = () => {
+    const statut = validation.statutValidationManager;
+    const isValide = statut === "valide";
+
+    return (
+      <div className="flex items-center justify-between border border-gris-10 rounded-applipro px-3 py-2">
+        <div>
+          <p className="text-[13px] text-gris-60">Manager</p>
           <p className="text-[14px] text-noir font-medium">
-            {isValide ? "Validé" : "En attente de validation"}
+            {isValide ? "Validé par le manager" : "En attente de validation"}
           </p>
+          {validation.dateSignatureManager && (
+            <p className="text-[12px] text-gris-60 mt-0.5">
+              Signé le {formatDate(validation.dateSignatureManager)}
+            </p>
+          )}
         </div>
         <span
           className={`${statutBadgeClasses} ${
@@ -931,14 +1074,93 @@ function ValidationView({
     );
   };
 
+  const handleSignerCollaborateur = () => {
+    const now = new Date().toISOString();
+    onChangeWizard((prev) => ({
+      ...prev,
+      validation: {
+        ...prev.validation,
+        statutSignatureCollaborateur: "valide",
+        motifRefusCollaborateur: undefined,
+        dateSignatureCollaborateur: now,
+      },
+    }));
+  };
+
+  const handleRefuserCollaborateur = () => {
+    const now = new Date().toISOString();
+    onChangeWizard((prev) => ({
+      ...prev,
+      validation: {
+        ...prev.validation,
+        statutSignatureCollaborateur: "refuse",
+        dateSignatureCollaborateur: now,
+      },
+    }));
+  };
+
+  const handleSignerManager = () => {
+    const now = new Date().toISOString();
+    onChangeWizard((prev) => ({
+      ...prev,
+      validation: {
+        ...prev.validation,
+        statutValidationManager: "valide",
+        dateSignatureManager: now,
+      },
+    }));
+  };
+
+  const handleFeedbackChange = (note: 1 | 2 | 3 | 4 | 5) => {
+    onChangeWizard((prev) => ({
+      ...prev,
+      validation: {
+        ...prev.validation,
+        feedbackNote: note,
+      },
+    }));
+  };
+
   return (
     <div className="space-y-6">
+      {/* Statuts de signature */}
       <section className="grid sm:grid-cols-2 gap-4">
-        {renderStatut(
-          validation.statutSignatureCollaborateur,
-          "Collaborateur",
-        )}
-        {renderStatut(validation.statutValidationManager, "Manager")}
+        {renderStatutCollaborateur()}
+        {renderStatutManager()}
+      </section>
+
+      {/* Actions de simulation de signature */}
+      <section className="bg-gris-05 rounded-applipro border border-gris-10 p-3 space-y-2">
+        <p className="text-[13px] text-gris-70">
+          Cette section simule la phase de signature telle qu&apos;elle serait
+          réalisée côté collaborateur et côté manager dans l&apos;application finale.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            size="small"
+            variant="primary"
+            onClick={handleSignerCollaborateur}
+          >
+            Signer en tant que collaborateur
+          </Button>
+          <Button
+            type="button"
+            size="small"
+            variant="secondary"
+            onClick={handleRefuserCollaborateur}
+          >
+            Refuser de signer (collaborateur)
+          </Button>
+          <Button
+            type="button"
+            size="small"
+            variant="secondary"
+            onClick={handleSignerManager}
+          >
+            Marquer comme signé côté manager
+          </Button>
+        </div>
       </section>
 
       {/* Remarques sur les champs (issues de la Vue Entretien) */}
@@ -1011,6 +1233,52 @@ function ValidationView({
         <p className="mt-1 text-[13px] text-gris-60">
           Dans la version finale, cette zone serait uniquement en lecture côté manager.
         </p>
+      </section>
+
+      {/* Feedback post-entretien (admin uniquement dans la vraie app) */}
+      <section>
+        <h3 className="text-[13px] font-semibold text-gris-80 uppercase tracking-wide mb-2">
+          Feedback post-entretien (simulation)
+        </h3>
+        <p className="text-[13px] text-gris-60 mb-3">
+          Micro-feedback qui serait saisi après la clôture de l&apos;entretien, visible uniquement par la RH dans le tableau de bord.
+        </p>
+        <div className="flex flex-wrap items-center gap-3 mb-3">
+          {[1, 2, 3, 4, 5].map((note) => {
+            const isSelected = validation.feedbackNote === note;
+            return (
+              <button
+                key={note}
+                type="button"
+                onClick={() => handleFeedbackChange(note as 1 | 2 | 3 | 4 | 5)}
+                className={`w-8 h-8 rounded-full border text-[13px] font-medium flex items-center justify-center ${
+                  isSelected
+                    ? "bg-applipro text-white border-applipro"
+                    : "bg-white text-gris-70 border-gris-20 hover:bg-gris-05"
+                }`}
+              >
+                {note}
+              </button>
+            );
+          })}
+        </div>
+        <Textarea
+          label=""
+          aria-label="Feedback post-entretien"
+          value={validation.feedbackCommentaire ?? ""}
+          onChange={(e) =>
+            onChangeWizard((prev) => ({
+              ...prev,
+              validation: {
+                ...prev.validation,
+                feedbackCommentaire: e.target.value,
+              },
+            }))
+          }
+          rows={3}
+          placeholder="Quelques mots sur la qualité de l'entretien, la préparation, l'écoute, etc."
+          className="mt-0"
+        />
       </section>
     </div>
   );

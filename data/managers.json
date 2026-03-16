@@ -4,6 +4,15 @@
     "nom": "Lefebvre",
     "prenom": "Pierre",
     "email": "pierre.lefebvre@jeantet-transport.fr",
+    "entite": "Jeantet Transport",
     "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  {
+    "id": "mgr-2",
+    "nom": "Garnier",
+    "prenom": "Isabelle",
+    "email": "isabelle.garnier@s2pl.fr",
+    "entite": "S2PL",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/65.jpg"
   }
 ]

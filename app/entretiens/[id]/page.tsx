@@ -92,7 +92,10 @@ export default function EntretienDetailPage({
             <dl className="grid sm:grid-cols-2 gap-3 text-[14px]">
               <div>
                 <dt className="text-gris-60">Date prévue</dt>
-                <dd className="font-medium text-noir">{formatDate(entretien.datePrevue)}</dd>
+                <dd className="font-medium text-noir">
+                  {formatDate(entretien.datePrevue)}
+                  {entretien.heurePrevue && <span className="text-gris-60 font-normal"> à {entretien.heurePrevue}</span>}
+                </dd>
               </div>
               {entretien.dateReelle && (
                 <div>

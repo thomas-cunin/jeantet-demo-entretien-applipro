@@ -16,7 +16,7 @@ export default function EntretienVuePage({
   const wizard = getWizardDataForEntretien(entretien);
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl">
+    <div className="p-6 md:p-8 max-w-[1400px]">
       <Link
         href={`/entretiens/${id}`}
         className="text-[14px] text-gris-60 hover:text-applipro mb-4 inline-block"

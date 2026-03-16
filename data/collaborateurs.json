@@ -5,6 +5,8 @@
     "prenom": "Sophie",
     "email": "sophie.martin@jeantet-transport.fr",
     "poste": "Agent d'exploitation",
+    "entite": "Jeantet Transport",
+    "groupe": "sedentaire",
     "dateArrivee": "2023-01-15",
     "avatarUrl": "https://randomuser.me/api/portraits/women/12.jpg"
   },
@@ -14,7 +16,42 @@
     "prenom": "Marc",
     "email": "marc.dubois@jeantet-transport.fr",
     "poste": "Chauffeur",
+    "entite": "Jeantet Transport",
+    "groupe": "conducteur",
     "dateArrivee": "2022-11-02",
     "avatarUrl": "https://randomuser.me/api/portraits/men/45.jpg"
+  },
+  {
+    "id": "col-3",
+    "nom": "Bernard",
+    "prenom": "Claire",
+    "email": "claire.bernard@s2pl.fr",
+    "poste": "Responsable logistique",
+    "entite": "S2PL",
+    "groupe": "sedentaire",
+    "dateArrivee": "2021-06-01",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/28.jpg"
+  },
+  {
+    "id": "col-4",
+    "nom": "Moreau",
+    "prenom": "Julien",
+    "email": "",
+    "poste": "Chauffeur SPL",
+    "entite": "S2PL",
+    "groupe": "conducteur",
+    "dateArrivee": "2024-02-10",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/56.jpg"
+  },
+  {
+    "id": "col-5",
+    "nom": "Petit",
+    "prenom": "Nathalie",
+    "email": "nathalie.petit@pontarlier-transport.fr",
+    "poste": "Assistante exploitation",
+    "entite": "Pontarlier Transport",
+    "groupe": "sedentaire",
+    "dateArrivee": "2020-09-14",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/44.jpg"
   }
 ]
