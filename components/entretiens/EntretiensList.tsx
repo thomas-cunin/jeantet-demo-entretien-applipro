@@ -32,7 +32,7 @@ function EntretienCard({
 }) {
   return (
     <Link
-      href={`/entretiens/${e.id}`}
+      href={`/entretiens/${e.id}/vue`}
       className={`block bg-white rounded-lg border border-gris-10 p-4 hover:border-applipro-20 hover:shadow-sm transition-all ${
         enRetard ? "border-statut-rouge/30 bg-statut-rouge/5" : ""
       }`}
@@ -328,7 +328,7 @@ export function EntretiensList({ entretiens }: EntretiensListProps) {
                     </td>
                     <td className="px-4 py-3">
                       <Link
-                        href={`/entretiens/${e.id}`}
+                        href={`/entretiens/${e.id}/vue`}
                         className="text-applipro text-[14px] font-medium hover:underline"
                       >
                         Voir

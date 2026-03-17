@@ -17,6 +17,7 @@ export interface WizardObjectifItem {
   intitule: string;
   echeance?: string;
   avancementCollaborateur?: number;
+  avancementManager?: number;
   commentaireCollaborateur?: string;
   commentaireManager?: string;
 }
@@ -31,7 +32,9 @@ export interface WizardCompetenceItem {
   competence: string;
   niveauAttendu: number;
   niveauCollaborateur: number;
+  niveauManager?: number;
   commentaire?: string;
+  commentaireManager?: string;
 }
 
 export interface WizardRessentiTheme {
@@ -60,7 +63,7 @@ export interface WizardPreEntretienManager {
   evaluationsManager: WizardEvaluationManager[];
   pointsForts: string[];
   axesProgres: string[];
-  besoinsFormationManager: string;
+  besoinsFormationManager: string | string[];
   notesPreparatoires: string;
 }
 
@@ -106,6 +109,21 @@ export interface WizardSignalRh {
   commentaire?: string;
 }
 
+export interface WizardNotationSynthese {
+  score: 1 | 2 | 3 | 4 | 5;
+  commentaire: string;
+}
+
+export interface WizardObjectifSynthese {
+  pourcentage: number;
+  commentaire: string;
+}
+
+export interface WizardCompetenceSynthese {
+  niveau: number;
+  commentaire: string;
+}
+
 export interface WizardSessionEntretien {
   objectifsNPlus1: WizardObjectifItem[];
   decisionsFormation: WizardBesoinFormation[];
@@ -113,6 +131,12 @@ export interface WizardSessionEntretien {
   bilan: WizardBilanEntretien;
   remarquesChamps: WizardRemarquesChamps;
   signauxRh: WizardSignalRh[];
+  notationsSynthese?: Record<string, WizardNotationSynthese>;
+  objectifsSynthese?: Record<string, WizardObjectifSynthese>;
+  competencesSynthese?: Record<string, WizardCompetenceSynthese>;
+  formationsSelectionnees?: string[];
+  pointsFortsCommentaire?: string;
+  axesProgresCommentaire?: string;
 }
 
 export interface WizardValidation {
@@ -138,6 +162,22 @@ export interface WizardEntretienData {
   preManager: WizardPreEntretienManager;
   session: WizardSessionEntretien;
   validation: WizardValidation;
+}
+
+/**
+ * Normalise besoinsFormationManager : si c'est une string (ancien format),
+ * la convertit en string[].
+ */
+export function normalizeBesoinsFormationManager(
+  val: string | string[] | undefined,
+): string[] {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  // Ancien format string : split par point ou retour à la ligne
+  return val
+    .split(/[.\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 const WIZARD_STORAGE_KEY = "demo-entretiens-wizard-v1";
@@ -200,6 +240,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Améliorer le taux de service livraison à 98%",
           echeance: "Mars 2026",
           avancementCollaborateur: 85,
+          avancementManager: 90,
           commentaireCollaborateur:
             "Taux de service atteint à 96,5%. Quelques retards dus à des aléas transport non maîtrisables (intempéries, pannes).",
         },
@@ -207,6 +248,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Optimiser les tournées pour réduire les kilomètres à vide",
           echeance: "Juin 2026",
           avancementCollaborateur: 90,
+          avancementManager: 95,
           commentaireCollaborateur:
             "Réduction de 12% des kilomètres à vide grâce à une meilleure planification. Bons retours des chauffeurs sur les nouveaux itinéraires.",
         },
@@ -214,6 +256,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Maîtriser le nouveau logiciel TMS",
           echeance: "Décembre 2026",
           avancementCollaborateur: 75,
+          avancementManager: 70,
           commentaireCollaborateur:
             "Formation TMS suivie et appliquée au quotidien. Module de traçabilité en cours d'approfondissement.",
         },
@@ -235,19 +278,25 @@ const WIZARD_DATA: WizardEntretienData[] = [
           competence: "Atteinte des objectifs annuels",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
+          niveauManager: 5,
           commentaire: "Objectifs de taux de service et d'optimisation globalement atteints malgré les aléas.",
+          commentaireManager: "Dépasse les attentes sur la majorité des indicateurs.",
         },
         {
           competence: "Autonomie et prise d'initiative",
           niveauAttendu: 4,
           niveauCollaborateur: 3,
+          niveauManager: 4,
           commentaire: "Autonome sur la gestion quotidienne des tournées, encore besoin d'accompagnement sur les situations de crise.",
+          commentaireManager: "A pris plusieurs initiatives seule cette année, progrès significatif.",
         },
         {
           competence: "Qualité de la communication",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
+          niveauManager: 3,
           commentaire: "Bonne communication avec les chauffeurs, les clients et les autres services.",
+          commentaireManager: "Bon à l'oral mais reporting écrit insuffisant.",
         },
       ],
     },
@@ -292,8 +341,10 @@ const WIZARD_DATA: WizardEntretienData[] = [
         "Améliorer la gestion des situations de crise (pannes, accidents)",
         "Prendre davantage d'initiatives sur les relations clients grands comptes",
       ],
-      besoinsFormationManager:
-        "Formation réglementation transport recommandée pour accompagner son évolution vers un rôle de responsable exploitation. La formation litiges serait un plus.",
+      besoinsFormationManager: [
+        "Formation réglementation transport recommandée pour accompagner son évolution",
+        "Formation litiges serait un plus",
+      ],
       notesPreparatoires:
         "Aborder la question de l'évolution vers un poste de responsable exploitation adjoint. Proposer un accompagnement terrain avec le directeur d'exploitation. Discuter de sa participation aux réunions clients.",
     },
@@ -329,6 +380,30 @@ const WIZARD_DATA: WizardEntretienData[] = [
       ],
       notesSeance:
         "Entretien très positif. Sophie est enthousiaste à l'idée de prendre plus de responsabilités sur le secteur Est. Nous avons défini ensemble un plan d'évolution vers un rôle de responsable exploitation adjoint sur 18 mois. Point intermédiaire prévu en septembre.",
+      notationsSynthese: {
+        "Qualité du travail": { score: 5, commentaire: "Accord sur une note élevée, performance remarquable." },
+        "Respect des délais": { score: 4, commentaire: "Bonne performance confirmée par les deux parties." },
+        "Autonomie": { score: 4, commentaire: "Synthèse entre 3 (collab) et 5 (manager), autonomie en progression." },
+        "Esprit d'équipe": { score: 5, commentaire: "Note commune, excellente collaboration reconnue." },
+        "Communication": { score: 3, commentaire: "Écart important : reporting écrit à améliorer malgré de bonnes qualités orales." },
+      },
+      objectifsSynthese: {
+        "Améliorer le taux de service livraison à 98%": { pourcentage: 88, commentaire: "Résultat très satisfaisant malgré les aléas." },
+        "Optimiser les tournées pour réduire les kilomètres à vide": { pourcentage: 92, commentaire: "Objectif quasi atteint, excellent travail." },
+        "Maîtriser le nouveau logiciel TMS": { pourcentage: 72, commentaire: "En bonne voie, module traçabilité à finaliser." },
+      },
+      competencesSynthese: {
+        "Atteinte des objectifs annuels": { niveau: 4, commentaire: "Très bon niveau confirmé." },
+        "Autonomie et prise d'initiative": { niveau: 4, commentaire: "Progression notable, accompagnement crise encore nécessaire." },
+        "Qualité de la communication": { niveau: 3, commentaire: "Point d'attention sur le reporting écrit." },
+      },
+      formationsSelectionnees: [
+        "Formation réglementation transport routier",
+        "Formation gestion des litiges transport",
+        "Formation réglementation transport recommandée pour accompagner son évolution",
+      ],
+      pointsFortsCommentaire: "Sophie est une collaboratrice exemplaire avec une progression rapide. Ses qualités relationnelles et sa rigueur sont des atouts majeurs pour l'équipe.",
+      axesProgresCommentaire: "Priorité sur le reporting écrit et la gestion des situations de crise. L'accompagnement terrain prévu devrait aider à progresser.",
       bilan: {
         syntheseGlobale:
           "Excellent entretien, Sophie démontre une vraie maturité professionnelle et une vision claire de son évolution chez Jeantet Transport. Les objectifs fixés sont ambitieux mais réalistes compte tenu de ses capacités démontrées cette année.",
@@ -377,7 +452,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
   },
 
   // ═══════════════════════════════════════════════════════════════
-  // ent-2 — Marc Dubois — PLANIFIÉ EN RETARD (préparations remplies, session vide)
+  // ent-2 — Marc Dubois — ENTRETIEN RÉALISÉ, EN ATTENTE DE SIGNATURE
   // ═══════════════════════════════════════════════════════════════
   {
     entretienId: "ent-2",
@@ -427,6 +502,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Maintenir un taux de livraison à l'heure supérieur à 95%",
           echeance: "Mars 2026",
           avancementCollaborateur: 95,
+          avancementManager: 90,
           commentaireCollaborateur:
             "Taux de 97% atteint malgré les aléas de circulation et météo.",
         },
@@ -434,6 +510,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Zéro sinistre responsable sur l'année",
           echeance: "Juin 2026",
           avancementCollaborateur: 80,
+          avancementManager: 60,
           commentaireCollaborateur:
             "Un accrochage mineur sur parking client, déclaré et traité. Pas de sinistre grave.",
         },
@@ -441,6 +518,7 @@ const WIZARD_DATA: WizardEntretienData[] = [
           intitule: "Optimiser la consommation de carburant",
           echeance: "Décembre 2026",
           avancementCollaborateur: 50,
+          avancementManager: 40,
           commentaireCollaborateur:
             "Réduction de 5% de la consommation grâce à l'écoconduite, mais objectif de 10% non atteint.",
         },
@@ -462,19 +540,25 @@ const WIZARD_DATA: WizardEntretienData[] = [
           competence: "Atteinte des objectifs annuels",
           niveauAttendu: 5,
           niveauCollaborateur: 5,
+          niveauManager: 4,
           commentaire: "Toutes les livraisons effectuées, très bon taux de service.",
+          commentaireManager: "Bon taux de service mais objectif carburant non atteint.",
         },
         {
           competence: "Autonomie et prise d'initiative",
           niveauAttendu: 4,
           niveauCollaborateur: 4,
+          niveauManager: 5,
           commentaire: "Autonome sur mes tournées, je gère bien les imprévus sur la route.",
+          commentaireManager: "Totalement autonome, sait gérer les imprévus.",
         },
         {
           competence: "Qualité de la communication",
           niveauAttendu: 4,
           niveauCollaborateur: 3,
+          niveauManager: 1,
           commentaire: "Bonne communication avec les clients lors des livraisons, à améliorer avec l'exploitation pour les remontées terrain.",
+          commentaireManager: "Remontées terrain quasi inexistantes. Point bloquant.",
         },
       ],
     },
@@ -519,222 +603,100 @@ const WIZARD_DATA: WizardEntretienData[] = [
         "Utiliser davantage les outils de traçabilité (smartphone, TMS)",
         "Mieux anticiper les besoins de maintenance du véhicule",
       ],
-      besoinsFormationManager:
-        "Formation écoconduite recommandée pour optimiser la consommation. La formation gestes et postures est importante pour sa santé sur le long terme.",
+      besoinsFormationManager: [
+        "Formation écoconduite recommandée pour optimiser la consommation",
+        "Formation gestes et postures importante pour sa santé sur le long terme",
+      ],
       notesPreparatoires:
         "Point important sur l'équilibre vie pro/perso et les découchés. Étudier la possibilité de tournées plus locales. Discuter du renouvellement de son véhicule prévu au S2.",
     },
     session: {
-      objectifsNPlus1: [],
-      decisionsFormation: [],
-      notesSeance: "",
-      bilan: {
-        syntheseGlobale: "",
-        pointsAmeliorer: [],
-        remarquesCollaborateur: "",
-        remarquesManager: "",
-      },
-      remarquesChamps: {},
-      signauxRh: [],
-    },
-    validation: {
-      remarquesCollaborateur: "",
-      statutSignatureCollaborateur: "en_attente",
-      statutValidationManager: "en_attente",
-    },
-  },
-
-  // ═══════════════════════════════════════════════════════════════
-  // ent-3 — Claire Bernard — REFUS DE SIGNER (désaccords sur évaluations)
-  // ═══════════════════════════════════════════════════════════════
-  {
-    entretienId: "ent-3",
-    preCollaborateur: {
-      ressentiGeneral:
-        "Une année de consolidation. J'ai pris davantage d'autonomie sur le pilotage des flux logistiques et la coordination inter-sites. La charge de travail reste soutenue mais je suis satisfaite de ma progression.",
-      sentimentGlobal: 4,
-      evaluations: [
-        { theme: "Qualité du travail", score: 5, commentaireCollaborateur: "Les indicateurs logistiques sont au vert, taux de service en hausse de 3 points. J'estime avoir dépassé les attentes." },
-        { theme: "Respect des délais", score: 4, commentaireCollaborateur: "Les livraisons respectent systématiquement les engagements clients." },
-        { theme: "Autonomie", score: 4, commentaireCollaborateur: "Autonome au quotidien, je pilote les indicateurs et les alertes sans supervision." },
-        { theme: "Esprit d'équipe", score: 5, commentaireCollaborateur: "Excellente entente avec les équipes terrain et les chauffeurs. Je fédère mon équipe logistique." },
-        { theme: "Communication", score: 4, commentaireCollaborateur: "Mes reportings sont réguliers et complets. Le problème vient du manque d'outils adaptés, pas de mes compétences." },
-      ],
-      ressentiParTheme: [
-        { theme: "Ambiance d'équipe", score: 4 },
-        { theme: "Équilibre vie pro/perso", score: 4 },
-        { theme: "Reconnaissance", score: 2 },
-      ],
-      objectifsNMoins1: [
-        { intitule: "Réduire les écarts d'inventaire sous 2%", echeance: "Décembre 2025", avancementCollaborateur: 80, commentaireCollaborateur: "Écarts réduits à 2,3%, proche de l'objectif." },
-        { intitule: "Mettre en place un tableau de bord logistique mensuel", echeance: "Juin 2025", avancementCollaborateur: 100, commentaireCollaborateur: "Tableau de bord en place et utilisé par la direction." },
-      ],
-      besoinsFormation: [
-        { intitule: "Formation Lean Management logistique", origine: "collaborateur", commentaire: "Pour optimiser les processus et réduire les temps de traitement." },
-      ],
-      competences: [
-        { competence: "Pilotage d'activité", niveauAttendu: 4, niveauCollaborateur: 5, commentaire: "Excellente maîtrise des KPI logistiques, au-delà des attentes." },
-        { competence: "Management d'équipe", niveauAttendu: 4, niveauCollaborateur: 4, commentaire: "Bonne progression, gestion d'équipe efficace." },
-        { competence: "Gestion budgétaire", niveauAttendu: 4, niveauCollaborateur: 3, commentaire: "En progression, peu d'exposition cette année mais volontaire." },
-      ],
-    },
-    preManager: {
-      syntheseManager:
-        "Claire a franchi un cap cette année sur le pilotage opérationnel. Elle est devenue autonome sur les indicateurs logistiques et la coordination inter-sites. Son management d'équipe progresse, mais un accompagnement reste nécessaire sur la gestion budgétaire.",
-      evaluationsManager: [
-        { theme: "Qualité du travail", score: 4, commentaire: "Tableaux de bord fiables, bonne anticipation des flux." },
-        { theme: "Respect des délais", score: 4, commentaire: "Les livraisons respectent les engagements clients." },
-        { theme: "Autonomie", score: 4, commentaire: "Autonome au quotidien, remonte bien les alertes." },
-        { theme: "Esprit d'équipe", score: 3, commentaire: "Quelques tensions avec l'équipe maintenance à résoudre." },
-        { theme: "Communication", score: 2, commentaire: "Reporting écrit insuffisant, manque de structuration dans les comptes rendus. Point bloquant pour l'évolution." },
-      ],
-      pointsForts: [
-        "Pilotage des KPI logistiques et réactivité sur les alertes",
-        "Bonne coordination inter-sites",
-        "Sens de l'organisation",
-      ],
-      axesProgres: [
-        "Monter en compétences sur la gestion budgétaire",
-        "Structurer davantage le reporting écrit — priorité forte",
-        "Développer les compétences managériales (gestion de conflits)",
-        "Améliorer la relation avec le service maintenance",
-      ],
-      besoinsFormationManager: "Formation Lean logistique pertinente. Ajouter une formation gestion budgétaire pour accompagner son évolution.",
-      notesPreparatoires: "Évoquer la possibilité d'un rôle élargi sur la coordination inter-sites. Point budget à aborder. Attention : Claire peut être sensible à la critique sur la communication.",
-    },
-    session: {
       objectifsNPlus1: [
-        { intitule: "Prendre en charge le budget logistique annuel", echeance: "2026-06-30", commentaireManager: "Accompagnement par le contrôleur de gestion." },
-        { intitule: "Réduire les écarts d'inventaire sous 1,5%", echeance: "2026-12-31", commentaireManager: "Objectif ambitieux mais atteignable." },
+        {
+          intitule: "Réduire la consommation de carburant de 10% sur l'année",
+          echeance: "2026-12-31",
+          commentaireManager: "Formation écoconduite prévue pour soutenir cet objectif.",
+        },
+        {
+          intitule: "Zéro sinistre responsable",
+          echeance: "2026-12-31",
+          commentaireManager: "Objectif reconduit, vigilance renforcée sur les parkings clients.",
+        },
+        {
+          intitule: "Améliorer les remontées terrain vers l'exploitation",
+          echeance: "2026-06-30",
+          commentaireManager: "Mise en place d'un point hebdomadaire et utilisation du TMS mobile.",
+        },
       ],
       decisionsFormation: [
-        { intitule: "Formation Lean Management - 3 jours", origine: "collaborateur", commentaire: "Planifiée pour mai 2026." },
-        { intitule: "Formation Gestion Budgétaire pour managers", origine: "manager", commentaire: "Second semestre 2026." },
+        {
+          intitule: "Formation écoconduite avancée - 1 jour",
+          origine: "collaborateur",
+          commentaire: "Planifiée pour mai 2026.",
+        },
+        {
+          intitule: "Formation gestes et postures",
+          origine: "collaborateur",
+          commentaire: "Programmée au second semestre.",
+        },
       ],
-      notesSeance: "Entretien tendu sur certains points. Claire conteste l'évaluation Communication (2/5) et Esprit d'équipe (3/5). Désaccord sur la perception du reporting. Claire estime que le problème vient du manque d'outils, pas de ses compétences.",
+      notesSeance:
+        "Entretien franc et direct. Marc reconnaît ses lacunes en communication avec l'exploitation. Nous avons convenu d'un point hebdomadaire rapide par téléphone. La question de l'équilibre vie pro/perso reste un sujet important : étudier des tournées plus locales au S2. Marc est motivé par les objectifs fixés.",
+      notationsSynthese: {
+        "Qualité du travail": { score: 5, commentaire: "Accord unanime sur la qualité des livraisons." },
+        "Respect des délais": { score: 4, commentaire: "Bon globalement, quelques retards le vendredi à surveiller." },
+        "Autonomie": { score: 5, commentaire: "Marc est totalement autonome sur ses tournées." },
+        "Esprit d'équipe": { score: 3, commentaire: "Tensions sur les véhicules à résoudre, compromis trouvé." },
+        "Communication": { score: 2, commentaire: "Point bloquant reconnu par Marc. Plan d'action défini." },
+      },
+      objectifsSynthese: {
+        "Maintenir un taux de livraison à l'heure supérieur à 95%": { pourcentage: 93, commentaire: "Très bon résultat, au-dessus de l'objectif." },
+        "Zéro sinistre responsable sur l'année": { pourcentage: 70, commentaire: "Accrochage mineur, pas de sinistre grave." },
+        "Optimiser la consommation de carburant": { pourcentage: 45, commentaire: "Objectif non atteint, formation écoconduite prévue." },
+      },
+      competencesSynthese: {
+        "Atteinte des objectifs annuels": { niveau: 4, commentaire: "Bon niveau global malgré l'objectif carburant." },
+        "Autonomie et prise d'initiative": { niveau: 5, commentaire: "Excellente autonomie confirmée." },
+        "Qualité de la communication": { niveau: 2, commentaire: "Axe de progrès majeur, plan d'action défini." },
+      },
+      formationsSelectionnees: [
+        "Formation écoconduite avancée",
+        "Formation gestes et postures / ergonomie",
+        "Formation écoconduite recommandée pour optimiser la consommation",
+      ],
+      pointsFortsCommentaire: "Marc est un chauffeur fiable et expérimenté. Sa connaissance des clients et des itinéraires est un atout précieux pour l'entreprise.",
+      axesProgresCommentaire: "La communication avec l'exploitation est le point d'attention principal. L'équilibre vie pro/perso doit aussi être amélioré pour éviter l'usure.",
       bilan: {
-        syntheseGlobale: "Entretien mitigé. Accord sur les objectifs mais désaccord sur l'évaluation des compétences transversales. Claire refuse de signer en l'état.",
+        syntheseGlobale:
+          "Entretien constructif malgré des points de tension sur la communication. Marc est conscient de ses axes de progrès et motivé par les objectifs fixés. Le plan d'action sur la communication et la réorganisation des tournées devrait améliorer la situation.",
         pointsAmeliorer: [
-          { intitule: "Gestion budgétaire", echeance: "2026-06-30", remarque: "Formation prévue et tutorat contrôle de gestion." },
-          { intitule: "Qualité du reporting écrit", echeance: "2026-04-30", remarque: "Mise en place d'un template de reporting avec le manager." },
+          {
+            intitule: "Communication avec l'exploitation",
+            echeance: "6mois",
+            remarque: "Point hebdomadaire + utilisation du TMS mobile. Bilan intermédiaire en septembre.",
+          },
+          {
+            intitule: "Gestion des conflits véhicules",
+            echeance: "2mois",
+            remarque: "Charte de partage des véhicules à mettre en place avec le responsable parc.",
+          },
         ],
-        remarquesCollaborateur: "Je ne suis pas d'accord avec les notes en Communication et Esprit d'équipe. Je demande une réévaluation après discussion avec la DRH.",
-        remarquesManager: "Les notes reflètent des observations factuelles. Je reste ouvert à un point intermédiaire pour réévaluer.",
+        remarquesCollaborateur:
+          "Je suis d'accord sur les objectifs. Je m'engage à faire des efforts sur la communication. J'espère que les tournées pourront être aménagées pour réduire les découchés.",
+        remarquesManager:
+          "Marc est un élément fiable de l'équipe. Je m'engage à étudier des tournées plus locales au second semestre et à l'accompagner sur la communication.",
       },
       remarquesChamps: {
-        "manager_evaluation:3": "Claire conteste cette note. Les tensions avec la maintenance sont documentées.",
-        "manager_evaluation:4": "Désaccord fort. Claire estime que le problème vient des outils, pas de ses compétences.",
+        "collab_evaluation:4": "Marc reconnaît le manque de remontées terrain. Plan d'amélioration en place.",
+        "manager_evaluation:3": "Les tensions sur les véhicules sont un sujet récurrent. Charte en cours.",
       },
       signauxRh: [
         {
           actif: true,
-          categorie: "demande_augmentation",
-          commentaire: "Claire estime que son niveau de responsabilité justifie une revalorisation salariale. À évaluer avec la DRH lors de la revue de rémunération.",
-        },
-        {
-          actif: true,
-          categorie: "difficulte_relationnelle",
-          commentaire: "Tensions récurrentes avec le service maintenance. Plusieurs incidents de communication signalés. Médiation à envisager.",
+          categorie: "risque_depart",
+          commentaire: "Marc exprime une lassitude liée aux découchés répétés. Si les tournées ne sont pas aménagées, risque de démission à moyen terme. À suivre de près.",
         },
       ],
-    },
-    validation: {
-      remarquesCollaborateur: "Je refuse de signer ce compte-rendu. Les évaluations en Communication (2/5) et Esprit d'équipe (3/5) ne reflètent pas la réalité de mon travail. Je demande un entretien complémentaire avec la DRH.",
-      statutSignatureCollaborateur: "refuse",
-      statutValidationManager: "valide",
-      dateSignatureManager: "2026-03-07T11:30:00.000Z",
-      motifRefusCollaborateur: "Désaccord sur les évaluations Communication et Esprit d'équipe. Demande de réévaluation avec médiation DRH.",
-      feedbackNote: 2,
-      feedbackCommentaire: "Entretien mal préparé côté manager sur le volet communication. Sentiment de ne pas être écoutée.",
-    },
-  },
-
-  // ═══════════════════════════════════════════════════════════════
-  // ent-4 — Julien Moreau — EN ATTENTE (campagne ouverte, aucune préparation)
-  // ═══════════════════════════════════════════════════════════════
-  {
-    entretienId: "ent-4",
-    preCollaborateur: {
-      ressentiGeneral: "",
-      sentimentGlobal: 3,
-      evaluations: [],
-      ressentiParTheme: [],
-      objectifsNMoins1: [],
-      besoinsFormation: [],
-      competences: [],
-    },
-    preManager: {
-      syntheseManager: "",
-      evaluationsManager: [],
-      pointsForts: [],
-      axesProgres: [],
-      besoinsFormationManager: "",
-      notesPreparatoires: "",
-    },
-    session: {
-      objectifsNPlus1: [],
-      decisionsFormation: [],
-      notesSeance: "",
-      bilan: {
-        syntheseGlobale: "",
-        pointsAmeliorer: [],
-        remarquesCollaborateur: "",
-        remarquesManager: "",
-      },
-      remarquesChamps: {},
-      signauxRh: [],
-    },
-    validation: {
-      remarquesCollaborateur: "",
-      statutSignatureCollaborateur: "en_attente",
-      statutValidationManager: "en_attente",
-    },
-  },
-
-  // ═══════════════════════════════════════════════════════════════
-  // ent-5 — Nathalie Petit — REPORTÉ (préparation collaborateur partielle)
-  // ═══════════════════════════════════════════════════════════════
-  {
-    entretienId: "ent-5",
-    preCollaborateur: {
-      ressentiGeneral:
-        "L'année a été compliquée avec la réorganisation du service. J'ai eu du mal à trouver ma place dans la nouvelle organisation. J'espère que l'entretien permettra de clarifier les choses.",
-      sentimentGlobal: 2,
-      evaluations: [
-        { theme: "Qualité du travail", score: 3, commentaireCollaborateur: "Résultats corrects malgré le contexte de réorganisation." },
-        { theme: "Esprit d'équipe", score: 3, commentaireCollaborateur: "Relations correctes mais perturbées par les changements d'organisation." },
-      ],
-      ressentiParTheme: [
-        { theme: "Ambiance d'équipe", score: 2 },
-        { theme: "Équilibre vie pro/perso", score: 3 },
-        { theme: "Reconnaissance", score: 2 },
-      ],
-      objectifsNMoins1: [],
-      besoinsFormation: [
-        { intitule: "Formation outils bureautiques avancés", origine: "collaborateur", commentaire: "Pour être plus efficace dans le suivi administratif." },
-      ],
-      competences: [],
-    },
-    preManager: {
-      syntheseManager: "",
-      evaluationsManager: [],
-      pointsForts: [],
-      axesProgres: [],
-      besoinsFormationManager: "",
-      notesPreparatoires: "Entretien reporté suite au congé maladie de Nathalie. À reprogrammer dès son retour.",
-    },
-    session: {
-      objectifsNPlus1: [],
-      decisionsFormation: [],
-      notesSeance: "",
-      bilan: {
-        syntheseGlobale: "",
-        pointsAmeliorer: [],
-        remarquesCollaborateur: "",
-        remarquesManager: "",
-      },
-      remarquesChamps: {},
-      signauxRh: [],
     },
     validation: {
       remarquesCollaborateur: "",
@@ -806,7 +768,7 @@ export function getWizardDataForEntretien(
       evaluationsManager: [],
       pointsForts: [],
       axesProgres: [],
-      besoinsFormationManager: "",
+      besoinsFormationManager: [],
       notesPreparatoires: "",
     },
     session: {

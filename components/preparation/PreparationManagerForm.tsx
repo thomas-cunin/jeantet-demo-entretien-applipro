@@ -24,10 +24,36 @@ const CRITERES_EVALUATION = [
   { id: "communication", label: "Communication" },
 ];
 
+const OBJECTIFS_N_1 = [
+  {
+    intitule: "Améliorer le taux de service livraison à 98%",
+    echeance: "Mars 2025",
+  },
+  {
+    intitule: "Optimiser les tournées pour réduire les kilomètres à vide de 10%",
+    echeance: "Juin 2025",
+  },
+  {
+    intitule: "Maîtriser le nouveau logiciel TMS (Transport Management System)",
+    echeance: "Décembre 2025",
+  },
+];
+
+const COMPETENCES_EXEMPLES = [
+  "Atteinte des objectifs annuels",
+  "Autonomie et prise d'initiative",
+  "Qualité de la communication",
+];
+
 export function PreparationManagerForm() {
   const [synthese, setSynthese] = useState("");
   const [scores, setScores] = useState<Record<string, number>>({});
   const [commentaires, setCommentaires] = useState<Record<string, string>>({});
+  const [objectifsReponses, setObjectifsReponses] = useState<
+    { avancement: number; commentaire: string }[]
+  >(OBJECTIFS_N_1.map(() => ({ avancement: 50, commentaire: "" })));
+  const [competences, setCompetences] = useState<Record<string, number>>({});
+  const [competencesCommentaires, setCompetencesCommentaires] = useState<Record<string, string>>({});
   const [pointsForts, setPointsForts] = useState<string[]>([]);
   const [nouveauPointFort, setNouveauPointFort] = useState("");
   const [axesProgres, setAxesProgres] = useState<string[]>([]);
@@ -35,6 +61,16 @@ export function PreparationManagerForm() {
   const [besoinsFormation, setBesoinsFormation] = useState("");
   const [notesPreparatoires, setNotesPreparatoires] = useState("");
   const [soumis, setSoumis] = useState(false);
+
+  const updateObjectifReponse = (
+    index: number,
+    field: "avancement" | "commentaire",
+    value: number | string
+  ) => {
+    setObjectifsReponses((prev) =>
+      prev.map((o, i) => (i === index ? { ...o, [field]: value } : o))
+    );
+  };
 
   const ajouterPointFort = () => {
     if (nouveauPointFort.trim()) {
@@ -187,11 +223,113 @@ export function PreparationManagerForm() {
           </div>
         </section>
 
-        {/* 3. Points forts */}
+        {/* 3. Objectifs N-1 */}
         <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
           <h2 className="text-base font-semibold text-noir flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
               3
+            </span>
+            Objectifs de l&apos;année passée
+          </h2>
+          <p className="text-[13px] text-gris-60 mt-1 mb-4">
+            Évaluez l&apos;avancement du collaborateur sur chacun des objectifs fixés lors du dernier entretien.
+          </p>
+          <div className="space-y-4">
+            {OBJECTIFS_N_1.map((obj, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-xl bg-gris-05 border border-gris-10 space-y-3 min-w-0 overflow-hidden"
+              >
+                <div>
+                  <p className="text-[15px] font-medium text-noir">
+                    {obj.intitule}
+                  </p>
+                  <p className="text-[13px] text-gris-60 mt-0.5">
+                    Échéance : {obj.echeance}
+                  </p>
+                </div>
+                <div className="space-y-1 min-w-0">
+                  <label className="text-[14px] text-gris-80 block">
+                    Avancement estimé
+                  </label>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={objectifsReponses[index]?.avancement ?? 50}
+                      onChange={(e) =>
+                        updateObjectifReponse(
+                          index,
+                          "avancement",
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                      className="flex-1 min-w-0 h-3 rounded-full appearance-none bg-gris-20 accent-applipro"
+                    />
+                    <span className="text-[14px] font-semibold text-applipro shrink-0 w-10 text-right">
+                      {objectifsReponses[index]?.avancement ?? 50}%
+                    </span>
+                  </div>
+                </div>
+                <textarea
+                  value={objectifsReponses[index]?.commentaire ?? ""}
+                  onChange={(e) =>
+                    updateObjectifReponse(index, "commentaire", e.target.value)
+                  }
+                  placeholder="Commentaire (optionnel)"
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg border border-gris-20 bg-white text-[14px] placeholder-gris-40 focus:outline-none focus:ring-2 focus:ring-applipro resize-none"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 4. Compétences */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
+          <h2 className="text-base font-semibold text-noir flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
+              4
+            </span>
+            Évaluation des compétences
+          </h2>
+          <p className="text-[13px] text-gris-60 mt-1 mb-4">
+            Évaluez le niveau du collaborateur sur chaque compétence clé (1 à 5).
+          </p>
+          <div className="space-y-4">
+            {COMPETENCES_EXEMPLES.map((comp) => (
+              <div
+                key={comp}
+                className="p-3 rounded-xl bg-gris-05 border border-gris-10"
+              >
+                <StarRating
+                  value={competences[comp] ?? 0}
+                  onChange={(v) =>
+                    setCompetences((prev) => ({ ...prev, [comp]: v }))
+                  }
+                  label={comp}
+                  size="md"
+                />
+                <textarea
+                  value={competencesCommentaires[comp] ?? ""}
+                  onChange={(e) =>
+                    setCompetencesCommentaires((prev) => ({ ...prev, [comp]: e.target.value }))
+                  }
+                  placeholder="Commentaire (optionnel)"
+                  rows={2}
+                  className="mt-2 w-full px-3 py-2 rounded-lg border border-gris-20 bg-white text-[14px] placeholder-gris-40 focus:outline-none focus:ring-2 focus:ring-applipro resize-none"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 5. Points forts */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
+          <h2 className="text-base font-semibold text-noir flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
+              5
             </span>
             Points forts du collaborateur
           </h2>
@@ -253,11 +391,11 @@ export function PreparationManagerForm() {
           </div>
         </section>
 
-        {/* 4. Axes de progrès */}
+        {/* 6. Axes de progrès */}
         <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
           <h2 className="text-base font-semibold text-noir flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
-              4
+              6
             </span>
             Axes de progrès identifiés
           </h2>
@@ -319,11 +457,11 @@ export function PreparationManagerForm() {
           </div>
         </section>
 
-        {/* 5. Besoins en formation */}
+        {/* 7. Besoins en formation */}
         <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
           <h2 className="text-base font-semibold text-noir flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
-              5
+              7
             </span>
             Besoins en formation identifiés
           </h2>
@@ -339,11 +477,11 @@ export function PreparationManagerForm() {
           />
         </section>
 
-        {/* 6. Notes préparatoires */}
+        {/* 8. Notes préparatoires */}
         <section className="bg-white rounded-2xl shadow-sm border border-gris-10 p-4 sm:p-5">
           <h2 className="text-base font-semibold text-noir flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-applipro-05 text-applipro flex items-center justify-center text-sm font-bold">
-              6
+              8
             </span>
             Notes préparatoires
           </h2>

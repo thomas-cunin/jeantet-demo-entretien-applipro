@@ -55,6 +55,21 @@ export default function EntretienDetailPage({
               Vue entretien
             </Button>
           </Link>
+          <Link href={`/entretiens/${id}/finalisation`}>
+            <Button variant="secondary" size="small">
+              Finalisation
+            </Button>
+          </Link>
+          <Link href={`/entretiens/${id}/post-manager`}>
+            <Button variant="secondary" size="small">
+              Post-Manager
+            </Button>
+          </Link>
+          <Link href={`/entretiens/${id}/post-collaborateur`}>
+            <Button variant="secondary" size="small">
+              Post-Collaborateur
+            </Button>
+          </Link>
         </div>
       </div>
 

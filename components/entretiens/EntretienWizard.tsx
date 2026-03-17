@@ -596,9 +596,19 @@ function PreManagerView({ wizard }: { wizard: WizardEntretienData }) {
           Formations recommandées par le manager pour le collaborateur
         </p>
         <div className="p-3 rounded-xl bg-white border border-gris-10">
-          <p className="text-[14px] text-gris-80 leading-relaxed">
-            {preManager.besoinsFormationManager || <span className="italic text-gris-40">Non renseigné</span>}
-          </p>
+          {(() => {
+            const bfm = preManager.besoinsFormationManager;
+            const items = Array.isArray(bfm) ? bfm : bfm ? [bfm] : [];
+            return items.length > 0 ? (
+              <ul className="space-y-1">
+                {items.map((item, idx) => (
+                  <li key={idx} className="text-[14px] text-gris-80 leading-relaxed">{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[14px] italic text-gris-40">Non renseigné</p>
+            );
+          })()}
         </div>
       </section>
 
