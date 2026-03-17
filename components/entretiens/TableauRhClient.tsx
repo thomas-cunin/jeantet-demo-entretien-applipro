@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import Link from "next/link";
 import type { EntretienWithDetails, Campagne } from "@/lib/types";
 import {
   type WizardEntretienData,
@@ -34,6 +35,7 @@ interface FormationDisplay {
   collaborateur: string;
   entite: string;
   commentaire?: string;
+  entretienId: string;
 }
 
 // ─── Barre de recherche réutilisable ───
@@ -239,7 +241,7 @@ export function TableauRhClient({ entretiens, campagnes }: Props) {
       const fromCollab = d.wizard.preCollaborateur.besoinsFormation.find((f) => f.intitule === intitule);
       const fromDecision = d.wizard.session.decisionsFormation.find((f) => f.intitule === intitule);
       const origine = fromDecision ? (fromDecision.origine === "manager" ? "Manager" : "Collaborateur") : fromCollab ? "Collaborateur" : "Manager";
-      formations.push({ intitule, origine, collaborateur: nom, entite, commentaire: fromDecision?.commentaire ?? fromCollab?.commentaire });
+      formations.push({ intitule, origine, collaborateur: nom, entite, commentaire: fromDecision?.commentaire ?? fromCollab?.commentaire, entretienId: d.entretien.id });
     }
   }
 
@@ -460,7 +462,15 @@ function CampagneTab({ data }: { data: EntretienRhData[] }) {
                       </span>
                       <span className="text-gris-60">— {item.entretien.collaborateur.poste}</span>
                     </div>
-                    <StatutPill statut={item.entretien.statut} />
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/entretiens/${item.entretien.id}/synthese`}
+                        className="text-[12px] text-applipro hover:underline font-medium"
+                      >
+                        Voir synthèse
+                      </Link>
+                      <StatutPill statut={item.entretien.statut} />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -569,6 +579,12 @@ function SignalementsTab({ signalements }: { signalements: SignalementDisplay[] 
                 <span className="text-[13px] text-gris-40">
                   (Manager : {item.entretien.manager.prenom} {item.entretien.manager.nom})
                 </span>
+                <Link
+                  href={`/entretiens/${item.entretien.id}/synthese`}
+                  className="text-[12px] text-applipro hover:underline font-medium ml-auto"
+                >
+                  Voir synthèse entretien
+                </Link>
               </div>
               {item.signal.commentaire && (
                 <p className="text-[14px] text-gris-80 leading-relaxed">
@@ -698,7 +714,8 @@ function FormationTab({ formations }: { formations: FormationDisplay[] }) {
                     <th className="pb-2 pr-3 font-medium">Formation</th>
                     <th className="pb-2 pr-3 font-medium">Collaborateur</th>
                     <th className="pb-2 pr-3 font-medium">Origine</th>
-                    <th className="pb-2 font-medium">Commentaire</th>
+                    <th className="pb-2 pr-3 font-medium">Commentaire</th>
+                    <th className="pb-2 font-medium"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gris-05">
@@ -712,6 +729,14 @@ function FormationTab({ formations }: { formations: FormationDisplay[] }) {
                         </span>
                       </td>
                       <td className="py-2 text-gris-60">{f.commentaire ?? "—"}</td>
+                      <td className="py-2 text-right">
+                        <Link
+                          href={`/entretiens/${f.entretienId}/synthese`}
+                          className="text-[12px] text-applipro hover:underline font-medium whitespace-nowrap"
+                        >
+                          Voir synthèse
+                        </Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -798,6 +823,12 @@ function FeedbacksTab({ feedbacks }: { feedbacks: EntretienRhData[] }) {
                   <span className="text-[13px] text-gris-40">
                     (Manager : {item.entretien.manager.prenom} {item.entretien.manager.nom})
                   </span>
+                  <Link
+                    href={`/entretiens/${item.entretien.id}/synthese`}
+                    className="text-[12px] text-applipro hover:underline font-medium ml-auto"
+                  >
+                    Voir synthèse entretien
+                  </Link>
                 </div>
                 {item.wizard.validation.feedbackCommentaire && (
                   <p className="text-[13px] text-gris-80 mt-1 leading-relaxed">

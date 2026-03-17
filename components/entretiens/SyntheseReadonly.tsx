@@ -39,8 +39,18 @@ function formatEcheance(val?: string): string {
       return "1 an";
     default:
       if (val.startsWith("custom:")) {
-        const jours = val.replace("custom:", "");
-        return jours ? `${jours} jours` : "Personnalisé";
+        const raw = val.replace("custom:", "").trim();
+        const n = parseInt(raw, 10);
+        if (!n || isNaN(n)) return "Personnalisé";
+        if (n >= 365 && n % 365 === 0) {
+          const ans = n / 365;
+          return ans === 1 ? "1 an" : `${ans} ans`;
+        }
+        if (n >= 30 && n % 30 === 0) {
+          const mois = n / 30;
+          return `${mois} mois`;
+        }
+        return `${n} jour${n > 1 ? "s" : ""}`;
       }
       return val;
   }
